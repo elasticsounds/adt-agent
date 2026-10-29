@@ -1,5 +1,6 @@
-import {defaults,validateTokens,contrastChecks,serialize,relative,sha,isSafePath} from './core.mjs?v=0.5.0';
-import {designFromPalette} from './design.mjs?v=0.5.0';
+import {compositionGuide} from './composition-guide.mjs?v=0.6.0';
+import {defaults,validateTokens,contrastChecks,serialize,relative,sha,isSafePath} from './core.mjs?v=0.6.0';
+import {designFromPalette} from './design.mjs?v=0.6.0';
 export const FAMILIES=['cover','credits','contents','divider','lesson','illustrated','columns','activity','quiz','table','notes','blank','preserve'];
 export const FAMILY_NAMES={cover:'Cover',credits:'Credits & publication',contents:'Contents',divider:'Chapter opener',lesson:'Reading lesson',illustrated:'Illustrated lesson',columns:'Columns & comparisons',activity:'Open-response activity',quiz:'Quiz',table:'Tables & data',notes:'Notes & reflection',blank:'Blank page',preserve:'Unusual composition'};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -30,6 +31,7 @@ export function applySystem(book,system,baseCSS,componentSource){
  book.write('folio/design-system.json',JSON.stringify(system,null,2));book.write('folio/brand-guide.html',guideDocument(book,system));book.write('folio/page-inventory.json',JSON.stringify({pdfPages:system.pages.map(({thumbnail,...p})=>p),sections:system.sections.map(({text,...s})=>s)},null,2));
 }
 export function guideDocument(book,system=book.design,{linkFor=href=>relative('folio/brand-guide.html',href)}={}){
+ if(system?.draft)return compositionGuide(book,system,{linkFor});
  if(!system)return '<!doctype html><html lang="en"><head><title>Design system</title></head><body><main id="content"><h1>Create the book’s design system</h1><p>Add the source PDF and generate its design system from Overview.</p></main></body></html>';
  validateTokens(book.tokens);const colors=Object.entries(book.tokens).filter(([k])=>['ink','paper','accent','surface'].includes(k));
  const families=system.families.map(f=>{const page=system.pages.find(p=>f.sourcePages.includes(p.page));return `<article class="family"><h3>${esc(f.name)}</h3>${page&&/^data:image\/(?:png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(page.thumbnail)?`<img class="source-thumb" alt="Source PDF page ${page.page}" src="${esc(page.thumbnail)}">`:''}<p>${f.sections.length} sections · ${f.sourcePages.length?'PDF '+f.sourcePages.slice(0,8).join(', ')+(f.sourcePages.length>8?' · +'+(f.sourcePages.length-8)+' more':''):'Source match needs review'}</p><ul>${f.examples.map(href=>`<li><a href="${esc(linkFor(href))}" data-folio-section="${esc(href)}">${esc(system.sections.find(s=>s.href===href)?.title||href)}</a></li>`).join('')||'<li>No matching ADT section. Review whether this page is missing.</li>'}</ul></article>`}).join('');

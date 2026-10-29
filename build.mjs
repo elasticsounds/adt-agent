@@ -14,6 +14,8 @@ for(const [from,to] of [
  ['node_modules/axe-core/LICENSE','public/vendor/LICENSE-axe']])await cp(from,to,{recursive:true});
 execFileSync('node_modules/.bin/tailwindcss',['-i','library/components.css','-o','public/vendor/components.css','--minify'],{stdio:'inherit'});
 await cp('library/components.css','public/vendor/components.source.css');
+execFileSync('node_modules/.bin/tailwindcss',['-i','library/compositions.css','-o','public/design/components.css','--minify'],{stdio:'inherit'});
+await cp('library/compositions.css','public/design/components.source.css');
 console.log('Local vendor assets and fixed Tailwind components ready.');
 
 // Keep a newly loaded page from mixing cached modules from an older release.

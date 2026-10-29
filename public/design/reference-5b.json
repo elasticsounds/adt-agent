@@ -1,0 +1,206 @@
+{
+  "id": "reference-5b-v1",
+  "pdfHashes": [
+    "e3154247e6984557f9f9852a705a8bbed818a60ae4aba93baf9e0a07cf65bd69",
+    "d21e854edf195029e8ad8a23342f9781796baa050fa0a83c45c76402d1cf742d"
+  ],
+  "tokens": {
+    "ink": "#292331",
+    "paper": "#ffffff",
+    "accent": "#765181",
+    "surface": "#f5eff7",
+    "font": "original",
+    "fontSize": 22,
+    "lineHeight": 1.65,
+    "width": 1040,
+    "space": 24,
+    "radius": 18
+  },
+  "brand": {
+    "headingFont": "Poppins",
+    "readingFont": "Amiri",
+    "fontEvidence": "Verified original adaptation; Poppins headings and Amiri reading text. Licensed web fonts are included.",
+    "colors": {
+      "canvas": "#f6f3f7",
+      "cover": "#80568c",
+      "reflection": "#e8f4f6",
+      "reflection-rule": "#91bac5",
+      "practice": "#fffaf0",
+      "practice-header": "#f7db9d",
+      "practice-ink": "#53390f",
+      "practice-rule": "#e9c17c",
+      "rule": "#cbb6d3",
+      "control-rule": "#a18ba9"
+    }
+  },
+  "fontFiles": [
+    "Poppins-400.ttf",
+    "Poppins-600.ttf",
+    "Poppins-700.ttf",
+    "Amiri-400.ttf",
+    "Amiri-700.ttf",
+    "poppins-OFL.txt",
+    "amiri-OFL.txt"
+  ],
+  "assets": [
+    {
+      "id": "pg001_im001",
+      "role": "Cover photograph, including the printed purple tint and curved clipping; cover lettering is rebuilt as live text.",
+      "page": 1,
+      "render": [
+        1329,
+        1800
+      ],
+      "bounds": [
+        81,
+        556,
+        1225,
+        1553
+      ]
+    },
+    {
+      "id": "pg001_im014",
+      "role": "Original ecological-material emblem from the cover.",
+      "page": 1,
+      "render": [
+        1329,
+        1800
+      ],
+      "bounds": [
+        1122,
+        1553,
+        1233,
+        1677
+      ]
+    },
+    {
+      "id": "pg001_im015",
+      "role": "Original publisher wordmark from the cover.",
+      "page": 1,
+      "render": [
+        1329,
+        1800
+      ],
+      "bounds": [
+        164,
+        1574,
+        450,
+        1651
+      ]
+    },
+    {
+      "id": "pg008_im004",
+      "role": "The original photograph is cropped from the rendered PDF to preserve its printed color and visible bounds.",
+      "page": 8,
+      "render": [
+        1329,
+        1800
+      ],
+      "bounds": [
+        550,
+        803,
+        1193,
+        1283
+      ]
+    },
+    {
+      "id": "reflection-icon",
+      "role": "Thought cloud from the reflection panel; rendered with its source background",
+      "page": 8,
+      "render": [
+        1329,
+        1800
+      ],
+      "bounds": [
+        155,
+        396,
+        264,
+        509
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "href": "pg001_sec001.html",
+      "kind": "cover",
+      "name": "Cover \u00b7 title, photograph & publisher",
+      "page": 1,
+      "region": "Full cover",
+      "roles": {
+        "grade": [
+          "pg001_n0002",
+          "pg001_n0003"
+        ],
+        "authors": [
+          "pg001_n0005",
+          "pg001_n0006"
+        ],
+        "title": [
+          "pg001_n0008",
+          "pg001_n0009"
+        ],
+        "subtitle": [
+          "pg001_n0010"
+        ],
+        "photo": "pg001_im001",
+        "footer": [
+          "pg001_im015",
+          "pg001_n0011",
+          "pg001_im014",
+          "pg001_n0013"
+        ]
+      }
+    },
+    {
+      "href": "pg002_sec001.html",
+      "kind": "contents",
+      "name": "Contents \u00b7 grouped rows & page leaders",
+      "page": 2,
+      "region": "Full contents page"
+    },
+    {
+      "href": "pg008_sec001.html",
+      "kind": "lesson",
+      "name": "Lesson \u00b7 chapter heading & keywords",
+      "page": 8,
+      "region": "Top heading and keyword strip",
+      "roles": {
+        "headings": [
+          "pg008_n0003",
+          "pg008_n0004"
+        ],
+        "keywords": [
+          "pg008_n0006",
+          "pg008_n0007"
+        ]
+      }
+    },
+    {
+      "href": "pg008_sec002.html",
+      "kind": "reflection",
+      "name": "Reflection \u00b7 prompts & response fields",
+      "page": 8,
+      "region": "Blue reflection panel",
+      "icon": "reflection-icon"
+    },
+    {
+      "href": "pg008_sec003.html",
+      "kind": "illustrated",
+      "name": "Illustrated reading \u00b7 text & source photograph",
+      "page": 8,
+      "region": "Reading paragraph and children with globe"
+    },
+    {
+      "href": "qz002.html",
+      "kind": "quiz",
+      "name": "Quiz \u00b7 question, choices & feedback",
+      "page": 12,
+      "region": "Companion activity for the diaspora lesson",
+      "sourceNote": "Studio-generated quiz. The exact question is not printed in the PDF; its visual treatment follows the source practice components. Answer logic is preserved."
+    }
+  ],
+  "responseMessages": {
+    "saved": "P\u00ebrgjigjet ruhen n\u00eb k\u00ebt\u00eb shfletues.",
+    "failure": "Ruajtja nuk \u00ebsht\u00eb e mundur n\u00eb k\u00ebt\u00eb shfletues. Kopjo p\u00ebrgjigjet para se t\u00eb largohesh nga faqja."
+  }
+}

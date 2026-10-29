@@ -1,5 +1,5 @@
-import {guideDocument} from './design-system.mjs?v=0.5.0';
-import {parse,resolvePath,relative,text,serialize,enc} from './core.mjs?v=0.5.0';
+import {guideDocument} from './design-system.mjs?v=0.6.0';
+import {parse,resolvePath,relative,text,serialize,enc} from './core.mjs?v=0.6.0';
 const mime=p=>({css:'text/css',js:'text/javascript',svg:'image/svg+xml',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',woff:'font/woff',woff2:'font/woff2',ttf:'font/ttf',otf:'font/otf',mp3:'audio/mpeg'})[p.split('.').pop().toLowerCase()]||'application/octet-stream';
 export class Preview {
  constructor(){this.urls=new Map();this.rev=null;this.axe=null;this.callbacks=new Map();this.scrollFrames=new Map();window.addEventListener('message',e=>{const scroll=this.scrollFrames.get(e.data?.folioToken);if(scroll&&e.source===scroll.frame.contentWindow&&e.data.type==='section'&&typeof e.data.href==='string'){scroll.onNavigate?.(e.data.href);return;}if(scroll&&e.source===scroll.frame.contentWindow&&e.data.type==='scroll'&&Number.isFinite(e.data.top)){scroll.onScroll(Math.max(0,e.data.top));return;}const cb=this.callbacks.get(e.data?.folioToken);if(cb&&e.source===cb.frame.contentWindow){this.callbacks.delete(e.data.folioToken);clearTimeout(cb.timer);cb.resolve(e.data)}})}
@@ -9,6 +9,8 @@ export class Preview {
  async html(book,href,{original=false,audit=false,components=false,scrollTop=0}={}){
   this.prepare(book,original);let d=parse(text(this.files,href));
   if(components){d=parse(guideDocument(book));href='folio/brand-guide.html';}
+  // Composed pages declare their own reading fonts. Avoid embedding unused reader/icon fonts in each example.
+  if(d.querySelector('#content.adt-composition'))for(const link of d.querySelectorAll('link[rel=stylesheet]')){const url=link.getAttribute('href')||'';if(/(?:^|\/)assets\/fonts\.css(?:\?|$)/.test(url)||(/fontawesome\/css\//.test(url)&&!d.querySelector('[class*="fa-"],[class~="fa"]')))link.remove();}
   const token=crypto.randomUUID().replaceAll('-','');for(const n of d.querySelectorAll('script,base,iframe,object,embed,portal,link[rel=preload],link[rel=modulepreload],link[rel=manifest],meta[http-equiv],meta[name=referrer],audio,video,source'))n.remove();
   for(const n of d.querySelectorAll('*'))for(const a of [...n.attributes])if(/^on/i.test(a.name)||['srcdoc','formaction','ping','autofocus'].includes(a.name))n.removeAttribute(a.name);
   for(const form of d.querySelectorAll('form')){form.removeAttribute('action');form.setAttribute('onsubmit','return false')}
@@ -19,12 +21,16 @@ export class Preview {
   for(const n of d.querySelectorAll('#content [data-id]'))if(!n.textContent.trim()&&!n.children.length&&!n.matches('img,input,textarea,select')&&typeof dict[n.dataset.id]==='string')n.textContent=dict[n.dataset.id];
   const csp=d.createElement('meta');csp.httpEquiv='Content-Security-Policy';csp.content=`default-src 'none'; script-src 'nonce-${token}'; style-src 'unsafe-inline' data:; img-src data:; font-src data:; connect-src 'none'; form-action 'none'; base-uri 'none';`;d.head.prepend(csp);
   for(let n=d.querySelector('#content')||d.querySelector('main');n;n=n.parentElement)n.setAttribute('data-adt-preview-flow','');
-  const style=d.createElement('style');style.textContent='html,body{margin:0;min-width:0;height:auto!important;overflow-y:auto!important}[data-adt-preview-flow]{height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;position:relative!important;inset:auto!important}body{display:block!important;padding:0!important}#content{opacity:1!important;visibility:visible!important}#interface-container,#nav-container{display:none!important}';d.head.append(style);
+  const style=d.createElement('style');style.textContent='html,body{margin:0;min-width:0;height:auto!important;overflow-y:auto!important}[data-adt-preview-flow]{height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;position:relative!important;inset:auto!important}body{display:block!important;padding:0!important}body[data-adt-composition]{padding:40px 24px 60px!important}@media(max-width:700px){body[data-adt-composition]{padding:14px 10px 40px!important}}#content{opacity:1!important;visibility:visible!important}#interface-container,#nav-container{display:none!important}';d.head.append(style);
   if(audit&&!this.axe)this.axe=await (await fetch('vendor/axe.min.js')).text();
   const code=((audit?this.axe+'\n':'')+`(${probe.toString()})(${JSON.stringify(token)},${audit},${Math.max(0,Number(scrollTop)||0)})`).replace(/<\/script/gi,'<\\/script');
   return {html:serialize(d).replace('</body>',()=>`<script nonce="${token}">${code}</script></body>`),token};
  }
- async show(frame,book,href,options={}){const {html,token}=await this.html(book,href,options);const result=new Promise((resolve,reject)=>{const timer=setTimeout(()=>{this.callbacks.delete(token);reject(Error('The layout preview timed out for '+href))},options.audit?25000:15000);this.callbacks.set(token,{frame,resolve,timer})});for(const [key,value] of this.scrollFrames)if(value.frame===frame)this.scrollFrames.delete(key);if(options.onScroll)this.scrollFrames.set(token,{frame,onScroll:options.onScroll,onNavigate:options.onNavigate});frame.srcdoc=html;return result}
+ async show(frame,book,href,options={}){const {html,token}=await this.html(book,href,options);
+  // A hidden and reused sandbox can retain a zero-size document after regeneration.
+  // Give each visible page a fresh browsing context; retain the app-level scroll state.
+  if(frame.id==='book-preview'&&frame.hasAttribute('srcdoc')){const previous=frame;frame=previous.cloneNode(false);frame.removeAttribute('srcdoc');previous.replaceWith(frame);for(const [key,cb]of this.callbacks)if(cb.frame===previous){clearTimeout(cb.timer);this.callbacks.delete(key);cb.resolve({cancelled:true});}for(const [key,cb]of this.scrollFrames)if(cb.frame===previous)this.scrollFrames.delete(key);}
+  const result=new Promise((resolve,reject)=>{const timer=setTimeout(()=>{this.callbacks.delete(token);reject(Error('The layout preview timed out for '+href))},options.audit?25000:15000);this.callbacks.set(token,{frame,resolve,timer})});for(const [key,value] of this.scrollFrames)if(value.frame===frame)this.scrollFrames.delete(key);if(options.onScroll)this.scrollFrames.set(token,{frame,onScroll:options.onScroll,onNavigate:options.onNavigate});frame.srcdoc=html;return result}
 }
 async function probe(token,audit,scrollTop){
  try{await new Promise(r=>document.readyState==='complete'?r():window.addEventListener('load',r,{once:true}));await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,4000))]);await Promise.all([...document.images].map(i=>i.decode?.().catch(()=>{})));await new Promise(r=>setTimeout(r,80));

@@ -68,6 +68,14 @@ The built site is `public/`. GitHub Pages deploys only that folder through `.git
 
 ## Features and limits
 
+### Composition gallery milestone (0.6)
+
+For the verified 5B reference PDF and raw Part 1 Studio export, design creation now builds six **separate composed examples**: cover, contents, lesson heading/keywords, reflection, illustrated reading and quiz. The source is fingerprinted before its recipe is used. Artwork is extracted from the user's PDF at the recorded regions; no textbook images or text are distributed with the site. Poppins and Amiri are bundled under their OFL licenses.
+
+The reusable renderer (`public/src/compositions.mjs`) moves existing bound nodes into fixed semantic components. The book-specific recipe (`public/design/reference-5b.json`) supplies bindings, source regions, roles and semantic colors. It is deliberately separate from `library/compositions.css`. Every candidate must preserve text bindings, controls and answers. A small, scoped helper restores local saving for ungraded written responses; the original quiz and navigation scripts remain intact. The Studio-generated quiz is identified as a companion activity, not an exact printed PDF exercise.
+
+These six pages are an explicit visual review milestone. They do **not** replace the whole book. Style controls update this draft, refresh restores it, and library export uses these composed pages. Only after the gallery is accepted should the same package be extended and applied to the remaining sections. This release does not yet infer arbitrary new composition recipes from another PDF: other books use the existing structural draft workflow. Its AI family/token analysis is not a substitute for composed-page visual acceptance.
+
 - Inventory every physical PDF page and ADT reading-order entry; extract page geometry, text evidence, possible blanks, a suggested palette and font-family evidence.
 - Fixed, scoped Tailwind 4.3.3 components without preflight. Control text/paper/accent/panel colors, reading font/size, line spacing, page width, component spacing and corners. Four supported foreground/background pairings must meet 4.5:1 contrast before application. PDF palette suggestions are adapted for contrast.
 - Preserve reading order, binding IDs, input identities, grading data, original scripts and reader navigation.
@@ -95,6 +103,14 @@ npm test
 
 Tests cover paired imports in either order, explicit design creation, retained navigation state, wheel scrolling and page-end reachability, laptop/tablet/phone layouts, local import/PDF inventory, whole-book styles, issue repairs, undo, text/description localization, accessibility, save/resume, export/reimport, source-crop provenance and mocked OpenAI requests. AI routing checks verify the two model roles, reduced context, exact task accounting, protected quiz text, contrast validation, cancellation and plan reuse. BYOK browser checks verify consent, encrypted credential persistence, session-only mode, disconnect deletion, absence of keys from projects/exports, constrained proposals, retries and accessible review UI. Recovery checks close and relaunch a persistent Chrome profile, test storage failure, legacy migration, conflicting tabs and portable backups. Full-design tests exercise source batches, brand planning, safe section assignment and resuming after failures; no real API key or paid request is used.
 
-Private real-book regressions can be run with `ADT_TEST_ZIP` and `ADT_TEST_PDF` environment variables. They verified 94 PDF pages and 92 ADT sections, actual Next/Back at desktop/phone widths, nine quizzes, response persistence and all embedded cache entries. The full layout scanner completed 184 section/width checks with zero axe violations, no broken images and one wide-table review flag. These results concern the tested book, not arbitrary inputs.
+The earlier real-book regressions used an already-restyled book. They establish runtime and export preservation, **not successful composition from raw Studio output**. They must not be used as evidence of the new generation pipeline's visual quality.
+
+The raw-input composition regression is separate:
+
+```sh
+RAW_ADT='/path/to/raw-studio-folder' SOURCE_PDF='/path/to/source.pdf' node tests/composition-reference.mjs
+```
+
+It requires the raw reference export, checks all source pages are inventoried, verifies six composed pages at desktop and phone widths, confirms bound text visibility and loaded fonts, and checks that generation leaves all original book sections unchanged. Images and reports stay in ignored `tests/results/`. Browser screenshots still require visual inspection; passing preservation checks alone is not visual acceptance.
 
 Dependency source/license notices are in `public/vendor`. [PDF.js](https://mozilla.github.io/pdf.js/examples/), [fflate](https://github.com/101arrowz/fflate), and [W3C contrast guidance](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html).
