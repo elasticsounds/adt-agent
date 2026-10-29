@@ -50,3 +50,18 @@
  #preview-stage.compare{display:flex;flex-direction:column;overflow:auto}#preview-stage.compare #adt-pane,#preview-stage.compare #pdf-preview{height:65dvh;min-height:380px;flex:none;width:100%}
  #editor:has(#preview-stage.compare) .preview-column{height:85dvh;min-height:560px}#issue-list{grid-template-columns:1fr}#issues-view .workspace-heading h1{font-size:27px}
 }
+
+/* Reading workspaces use the document scroll, including every header and toolbar.
+   The embedded documents report their content height; no nested vertical viewport. */
+.app-header{position:static}
+#design-view,#workspace-view{height:auto;min-height:0;overflow:visible}
+#editor,#design-editor{height:auto;min-height:0;overflow:visible;grid-template-rows:auto;align-items:start;flex:none}
+.preview-column,.design-preview-column,#editor:has(#preview-stage.compare) .preview-column{height:auto;min-height:0;overflow:visible;flex:none}
+#preview-stage,#design-stage,#preview-stage.compare{height:auto;min-height:0;overflow:visible;flex:none;scrollbar-gutter:auto;align-items:start}
+#adt-pane,#preview-stage.compare #adt-pane,#preview-stage.compare #pdf-preview{height:auto;min-height:0;overflow:visible;flex:none;overscroll-behavior:auto;scrollbar-gutter:auto}
+#adt-pane #book-preview,#design-preview{display:block;flex:none;min-height:600px;height:800px;width:100%;border:0}
+#preview-stage.phone #book-preview{width:390px;max-width:100%}
+#pdf-preview{overflow:visible}.pdf-navigation{position:static}
+#design-inspector,#inspector,#page-list-panel{max-height:none;overflow:visible}
+#inspector .inspector-panel,#design-inspector .inspector-panel{max-height:none;overflow:visible}
+@media(max-width:780px){#design-stage.phone #design-preview,#preview-stage.phone #book-preview{width:100%;max-width:390px}#preview-stage.compare{display:flex;gap:24px}.design-preview-column,.preview-column{height:auto;min-height:0}#preview-stage.compare #adt-pane,#preview-stage.compare #pdf-preview{height:auto;min-height:0}}

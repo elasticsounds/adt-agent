@@ -1,6 +1,6 @@
-import {compositionGuide} from './composition-guide.mjs?v=0.7.0';
-import {defaults,validateTokens,contrastChecks,serialize,relative,sha,isSafePath,parse,dec} from './core.mjs?v=0.7.0';
-import {designFromPalette} from './design.mjs?v=0.7.0';
+import {compositionGuide} from './composition-guide.mjs?v=0.8.0';
+import {defaults,validateTokens,contrastChecks,serialize,relative,sha,isSafePath,parse,dec} from './core.mjs?v=0.8.0';
+import {designFromPalette} from './design.mjs?v=0.8.0';
 export const FAMILIES=['cover','credits','contents','divider','lesson','illustrated','columns','activity','quiz','table','notes','blank','preserve'];
 export const FAMILY_NAMES={cover:'Cover',credits:'Credits & publication',contents:'Contents',divider:'Chapter opener',lesson:'Reading lesson',illustrated:'Illustrated lesson',columns:'Columns & comparisons',activity:'Open-response activity',quiz:'Quiz',table:'Tables & data',notes:'Notes & reflection',blank:'Blank page',preserve:'Unusual composition'};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

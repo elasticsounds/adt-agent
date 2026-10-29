@@ -1,4 +1,4 @@
-import {parse,serialize,relative,resolvePath,enc,dec,sha,validateTokens,contrast} from './core.mjs?v=0.7.0';
+import {parse,serialize,relative,resolvePath,enc,dec,sha,validateTokens,contrast} from './core.mjs?v=0.8.0';
 
 export const COMPOSITION_VERSION=1;
 const referenceHashes=new Set(['e3154247e6984557f9f9852a705a8bbed818a60ae4aba93baf9e0a07cf65bd69','d21e854edf195029e8ad8a23342f9781796baa050fa0a83c45c76402d1cf742d']);

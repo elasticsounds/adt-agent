@@ -1,4 +1,4 @@
-import {relative,parse} from './core.mjs?v=0.7.0';
+import {relative,parse} from './core.mjs?v=0.8.0';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function compositionGuide(book,system,{linkFor=href=>relative('folio/brand-guide.html',href)}={}){
  const draft=system.draft,colors={Accent:book.tokens.accent,Reflection:draft.brand.colors.reflection,Practice:draft.brand.colors['practice-header'],Paper:book.tokens.paper,Ink:book.tokens.ink};
