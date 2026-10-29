@@ -65,3 +65,5 @@
 #design-inspector,#inspector,#page-list-panel{max-height:none;overflow:visible}
 #inspector .inspector-panel,#design-inspector .inspector-panel{max-height:none;overflow:visible}
 @media(max-width:780px){#design-stage.phone #design-preview,#preview-stage.phone #book-preview{width:100%;max-width:390px}#preview-stage.compare{display:flex;gap:24px}.design-preview-column,.preview-column{height:auto;min-height:0}#preview-stage.compare #adt-pane,#preview-stage.compare #pdf-preview{height:auto;min-height:0}}
+
+.comparison-status{margin:0;padding:10px 14px;background:#edf4ee;color:#235e50;border-bottom:1px solid var(--border);font-size:12px;flex:none}.comparison-empty{padding:40px 24px;background:#fff;border:1px solid var(--border);border-radius:8px}.comparison-empty h2{font-size:20px}.comparison-empty p{max-width:540px;margin-bottom:0}
