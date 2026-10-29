@@ -1,12 +1,12 @@
 {
   "name": "adt-agent",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
     "build": "node build.mjs",
-    "test": "node tests/ai-routing.mjs && node tests/smoke.mjs && node tests/usability.mjs && node tests/ai-security.mjs && node tests/crop.mjs && node tests/server-security.mjs"
+    "test": "node tests/ai-routing.mjs && node tests/smoke.mjs && node tests/usability.mjs && node tests/ai-security.mjs && node tests/crop.mjs && node tests/server-security.mjs && node tests/persistence.mjs && node tests/design-system.mjs"
   },
   "dependencies": {
     "axe-core": "4.14.0",

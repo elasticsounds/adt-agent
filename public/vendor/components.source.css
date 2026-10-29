@@ -36,3 +36,24 @@
 #content.folio-document [data-folio-flow]{display:flex!important;flex-direction:column!important;gap:var(--folio-space,24px)!important}
 @media(max-width:600px){#content.folio-document{padding:20px 16px}#content.folio-document :is([data-folio-component=panel],[data-folio-component=activity]){padding:16px}}
 @media(prefers-reduced-motion:reduce){#content.folio-document *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+/* Stable page-family variants. Existing nodes, activities and bindings remain intact. */
+#content.folio-document[data-folio-family=cover] h1{font-size:clamp(2em,6vw,3.3em);border-bottom:5px solid var(--folio-accent);padding-bottom:.5em}
+#content.folio-document[data-folio-family=credits]{max-width:760px;font-size:var(--folio-size);border-top:5px solid var(--folio-accent)}
+#content.folio-document[data-folio-family=contents] :is(ol,ul){padding-inline-start:1.5em}
+#content.folio-document[data-folio-family=contents] li{padding-block:.55em;border-bottom:1px solid var(--folio-accent)}
+#content.folio-document[data-folio-family=divider]{min-height:65vh;background:var(--folio-surface);border-top:12px solid var(--folio-accent)}
+#content.folio-document[data-folio-family=divider] h1{font-size:clamp(2em,6vw,3em)}
+#content.folio-document[data-folio-family=illustrated] figure{padding:var(--folio-space);background:var(--folio-surface)}
+#content.folio-document[data-folio-family=table] th{background:var(--folio-surface);color:var(--folio-ink)}
+#content.folio-document[data-folio-family=notes]{background:var(--folio-surface);border-inline-start:6px solid var(--folio-accent)}
+#content.folio-document[data-folio-layout=stack]>section{display:block}
+#content.folio-document[data-folio-layout=split]>section{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--folio-space)}
+#content.folio-document[data-folio-layout=split]>section>:is(h1,h2,h3,header){grid-column:1/-1}
+#content.folio-document[data-folio-layout=cards]>section>:is(figure,aside){padding:var(--folio-space);border:2px solid var(--folio-accent);border-radius:var(--folio-radius)}
+@media(max-width:700px){#content.folio-document[data-folio-layout=split]>section{display:block}}
+
+/* Source-observed treatments are constrained to these reviewed variants. */
+#content.folio-document[data-folio-panel=tinted] [data-folio-component=activity],
+#content.folio-document[data-folio-panel=tinted] [data-folio-component=panel]{background:var(--folio-surface);border-color:var(--folio-accent)}
+#content.folio-document[data-folio-panel=plain] [data-folio-component=activity],
+#content.folio-document[data-folio-panel=plain] [data-folio-component=panel]{background:transparent;border-width:0;border-left:3px solid var(--folio-accent);border-radius:0}

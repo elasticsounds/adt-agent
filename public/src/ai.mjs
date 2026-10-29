@@ -1,4 +1,5 @@
-import {defaults,validateTokens} from './core.mjs?v=0.4.1';
+import {rememberKey,recalledKey} from './storage.mjs?v=0.5.0';
+import {defaults,validateTokens} from './core.mjs?v=0.5.0';
 
 // User-owned credentials and the last failed handoff live only in this tab.
 export const MODELS=Object.freeze({planner:'gpt-6.1-sol',executor:'gpt-6-luna'});
@@ -57,16 +58,18 @@ function usageOf(value){return value&&Number.isFinite(value.input_tokens)&&Numbe
 export class OpenAISession {
  #key='';#active=null;#epoch=0;#handoff=null;
  get connected(){return !!this.#key}
+ async remember(enabled){await rememberKey(enabled?this.#key:'')}
+ async restore(){const key=await recalledKey();if(key)this.connect(key);return !!key}
  get hasPlan(){return !!this.#handoff}
  get models(){return MODELS}
  connect(value){const key=value.trim()||this.#key;if(!/^sk-[A-Za-z0-9_-]{16,500}$/.test(key))throw Error('Enter an OpenAI API key starting with sk-.');this.#active?.abort();this.#epoch++;this.#key=key;this.#handoff=null;}
  disconnect(){this.#active?.abort();this.#key='';this.#handoff=null;this.#epoch++;}
  cancel(){this.#active?.abort();this.#handoff=null;}
  #check(controller,epoch){if(controller.signal.aborted)throw new DOMException('Cancelled','AbortError');if(epoch!==this.#epoch||!this.#key)throw Error('The connection changed. The response was discarded.');}
- async #call({role,model,effort,maxTokens,instructions,content,schema},controller,epoch){
+ async #call({role,model,effort,maxTokens,instructions,content,schema,formatName},controller,epoch){
   this.#check(controller,epoch);const timeout=setTimeout(()=>controller.abort(),role==='Sol'?120000:90000);
   try{
-   const response=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:'Bearer '+this.#key,'Content-Type':'application/json'},body:JSON.stringify({model,reasoning:{effort},store:false,input:[{role:'system',content:instructions},{role:'user',content}],text:{format:{type:'json_schema',name:role==='Sol'?'adt_plan':'adt_execution',strict:true,schema}},max_output_tokens:maxTokens}),credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error',signal:controller.signal});
+   const response=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:'Bearer '+this.#key,'Content-Type':'application/json'},body:JSON.stringify({model,reasoning:{effort},store:false,input:[{role:'system',content:instructions},{role:'user',content}],text:{format:{type:'json_schema',name:formatName||(role==='Sol'?'adt_plan':'adt_execution'),strict:true,schema}},max_output_tokens:maxTokens}),credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error',signal:controller.signal});
    this.#check(controller,epoch);
    if(!response.ok){const messages={401:'OpenAI rejected this key. Reconnect with a valid key.',403:`Your key cannot access ${model}. Enable access to this model in your OpenAI project.`,404:`${model} was not found for this account. This workflow does not substitute another model.`,429:'OpenAI reports a usage or rate limit. Check your account before retrying.',400:`OpenAI could not accept the ${role} request. Check your project's model access.`};throw Error(messages[response.status]||`${role} returned an error (${response.status}). Nothing was changed.`);}
    const result=await response.json();this.#check(controller,epoch);
@@ -75,6 +78,11 @@ export class OpenAISession {
    let value;try{value=JSON.parse(output)}catch{throw Error(`${role}'s response could not be read. Nothing was changed.`);}
    return {value,usage:usageOf(result.usage)};
   }finally{clearTimeout(timeout);}
+ }
+ async structured({role='Sol',schema,instructions,content,formatName,maxTokens=6000,consent=false,signal}){
+  if(!this.#key)throw Error('Connect your OpenAI key first.');if(!consent)throw Error('Approve sharing PDF pages and ADT summaries before analysis.');if(this.#active)throw Error('An AI request is already running.');if(!['Sol','Luna'].includes(role)||JSON.stringify(content).length>9000000||maxTokens>10000)throw Error('The analysis request exceeds its limits.');
+  const controller=new AbortController(),epoch=this.#epoch;this.#active=controller;const abort=()=>controller.abort();if(signal?.aborted)abort();signal?.addEventListener('abort',abort,{once:true});
+  try{return (await this.#call({role,model:role==='Sol'?MODELS.planner:MODELS.executor,effort:role==='Sol'?'medium':'low',schema,instructions,content,formatName,maxTokens},controller,epoch)).value;}catch(error){if(error.name==='AbortError')throw Error('Analysis stopped. Completed batches are saved; you can resume them.');throw error;}finally{signal?.removeEventListener('abort',abort);if(this.#active===controller)this.#active=null;}
  }
  async request(data,{onStage=()=>{},onPlan=()=>{}}={}){
   if(!this.#key)throw Error('Connect your OpenAI key first.');

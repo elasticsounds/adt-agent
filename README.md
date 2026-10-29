@@ -2,20 +2,32 @@
 
 A website for restyling and reviewing existing ADT Studio books against their source PDFs. Import your files, refine a shared component system, review accessibility and exercise issues, and export a repaired ADT.
 
-**Files are processed in your browser. AI uses your own OpenAI key and sends approved page context directly to OpenAI.**
+**Files are processed in your browser. Projects save automatically on this device. AI uses your own OpenAI key and sends only the context you approve directly to OpenAI.**
 
 ## Use the website
 
 1. On **Overview**, import the ADT ZIP/folder and its matching PDF, in either order. File controls become available once the workspace finishes loading. Both files stay visible with their filenames and page/section counts; importing does not take you away from this step.
-2. Choose **Create design system**. The fixed component library is applied across the book using a PDF-derived accent adapted for contrast, while retaining the book’s own font. Existing ADT Agent designs and edits are retained. Refine the shared typography, color and spacing in **Design system**.
-3. Open **Book & source** to read the book and compare the PDF. Use the section picker or optional section list; hide the tools for more reading room. The book, PDF and tools scroll independently. Overview retains both files, the current section and edits. Use **Save locally** to preserve a project across a refresh or browser restart.
+2. Choose **Create local draft** for an offline analysis of the source geometry, or enable **Analyze the full PDF with AI** and connect your key for visual analysis of every PDF page. Sol plans the brand; Luna assigns every ADT section to a supported page family. Both paths build a book-specific guide, source coverage and real styled examples. Refine the shared typography, color and spacing in **Design system**. Source-only families remain visible and missing or uncertain matches remain flagged.
+3. Open **Book & source** to read the book and compare the PDF. Use the section picker or optional section list; hide the tools for more reading room. The book, PDF and tools scroll independently. Overview retains both files, the current section and edits. Files, edits, the PDF, design system, undo history, conversation, drafts and reading position save automatically. The latest project reopens after refresh or a browser restart. **Save now** flushes any pending changes.
 4. Use **Review issues** for supported automatic repairs and editorial review. Check every section at desktop and phone widths.
 5. For AI assistance, choose **Connect OpenAI** and enter your project API key. **GPT-6.1 Sol plans** with medium reasoning, then **GPT-6 Luna executes** with low reasoning. In Chat, choose **AI · Sol → Luna**, approve sharing the selected page context, and review the proposed edits before applying them. Both models must be available to your account.
-6. **Validate & export** produces the ADT, editable Tailwind component library and review report.
+6. **Validate & export** produces the ADT, editable Tailwind component library with self-contained real page examples, and review report. **Download project backup** includes both originals and working files, source PDF, undo history and progress so you can move between browsers or devices. **Saved projects** lets you switch books without replacing the earlier project.
 
 You can explicitly continue without a PDF to inspect an ADT, then add its source later from Overview. The brand button and workspace navigation keep the current project loaded; they do not reload the website.
 
 Connecting a key makes no API request. API usage is charged to the user's OpenAI account when an AI request is sent. Use a personal project key with appropriate limits; both models must be available to your account. The app never silently substitutes a different model.
+
+## Full PDF design analysis
+
+Explicit full-PDF consent sends page renderings (up to 1,000 pixels on the longest edge), extracted text/geometry and ADT section summaries directly to OpenAI. Sol examines every physical PDF page in batches of six, then derives constrained, contrast-checked tokens and typography from those observations. Luna receives the brand plan and relevant evidence to assign batches of 18 ADT sections. The interface shows the maximum planned request count before starting.
+
+Each successful batch is checkpointed locally before the next paid request. Stop, failure or refresh leaves the job resumable. Resume skips completed batches; it never starts itself on reload. A changed source or section fingerprint invalidates previous analysis. Unknown/duplicate/missing section IDs, unsafe exercise layouts, out-of-range typography and inadequate contrast are rejected. The job never accepts model-generated scripts or arbitrary HTML/CSS. Existing controls and content nodes remain intact.
+
+Source observations select reviewed page-family, layout and panel variants; the full design is applied to every existing section. The guide includes all physical PDF pages, including those with no matched ADT section. Local generation is explicitly labeled a draft; AI completion still requires a visual fidelity review. This is a constrained editing system, not an autonomous replacement for a human’s judgment about every unusual composition. Incorrect artwork and descriptions use the source-review/crop and editing tools rather than invented replacements.
+
+## Direct Codex workflow
+
+For the full agent-driven process—visual inspection, custom variants when needed, asset repairs and iteration against the original reader—use [the self-contained Codex prompt](public/codex-restyle-prompt.md). Replace its three paths. It works with local files without this website or an additional API key. The same prompt is downloadable from Overview.
 
 ## Sol → Luna workflow
 
@@ -29,14 +41,14 @@ These settings reduce repeated context and avoid repeating successful planning; 
 
 ## Key and file privacy
 
-- The key is held only in private JavaScript memory for the current tab. The input is cleared after connection.
-- The app does not save keys in cookies, local/session storage, IndexedDB, project files, reports, exported ZIPs or GitHub.
-- Disconnect, refresh or leaving the page clears the key. Disconnect also clears content-sharing consent and aborts active AI requests.
+- **Remember my key on this browser** is enabled by default. The key is encrypted with AES-GCM in a separate IndexedDB credential store, using a nonextractable browser CryptoKey. It survives refresh and closing the browser. The password field is cleared immediately after connection.
+- Credentials never enter project records, project backups, reports, exported books, local/session storage or GitHub. Encryption protects the stored representation; it does not protect against compromised same-origin application code or browser extensions.
+- Disconnect deletes the remembered key, clears sharing consent and aborts active requests. Uncheck Remember for a session-only connection. Connecting and restoring a key make no API request.
 - Requests go directly to `https://api.openai.com/v1/responses` over HTTPS. There is no application proxy receiving users' keys or book contents.
-- Only the current section's text/IDs, style settings, findings, the user's request, and an explicitly selected optional image are sent. The complete PDF/archive is not sent.
+- Chat sends the current section’s approved text/IDs, styles, findings, request and optionally a selected image. Full-PDF design analysis has a separate explicit sharing control and sends every PDF page image plus extracted evidence and ADT summaries. The raw archive, source PDF file and reader scripts are not uploaded.
 - Requests use `store:false`, no cookies, no referrer, no redirects, bounded output and no automatic retry. OpenAI processing remains subject to the user's account terms.
 - No analytics, CDN dependencies or remote fonts. Imported reader scripts do not execute in the sandboxed layout preview.
-- Save project locally explicitly stores a working copy in IndexedDB. Export a ZIP for a portable backup.
+- Projects autosave to IndexedDB using content-addressed file blobs and atomic project records. Multiple saved books, older saved-project migration, generation checks against stale tabs, storage-failure alerts and portable project backups are supported. Browser storage remains tied to this browser profile and origin; clearing site data/private browsing can remove it. Persistent-storage permission is requested where supported. Download a project backup for durable storage outside the browser.
 
 Browser BYOK is intended for a user supplying their own key to a tool they trust. A browser application cannot protect a key from that user's browser, extensions or compromised application code. Do not embed a shared organization/service key in this site. OpenAI recommends server-side secret management for applications distributing a developer-owned credential. This app distributes no credential; a future centrally managed service would need an authenticated backend and server-side secrets.
 
@@ -64,7 +76,7 @@ The built site is `public/`. GitHub Pages deploys only that folder through `.git
 - Audit every section at 1200px and 390px with axe and layout checks. Distinguish violations, inconclusive checks and editorial review. Imported reader scripts are preserved in export but not executed during these isolated content checks.
 - Edit descriptions and source-language dictionaries. Flag existing narration when its wording changes. Crop source artwork with PDF hash/page/coordinates and image hashes recorded.
 - Local chat commands for common style changes, supported fixes and precise leaf-text edits; optional Sol planning and Luna execution propose only validated style, text, description, label and component operations.
-- Undo, local save/resume/delete, source mappings, original/styled preview, component examples, ADT ZIP/report/library export.
+- Undo, automatic recovery, multiple saved projects, portable backups, source mappings, original/styled preview, actual page-family examples and ADT ZIP/report/library export.
 - Synchronize recognized Studio embedded page caches and version edited dependencies, preserving styling through Next/Back.
 
 “Valid” means the **ADT Studio structural and preservation profile** passed. It is not an official ADT or WCAG certification. Human verification still covers original reader behavior, keyboard/screen-reader use, narration, reading order, image meaning and pedagogical accuracy. Existing SCORM manifests include the new component files; full SCORM schema validation is not implemented.
@@ -81,7 +93,7 @@ With the local server running and Chrome installed:
 npm test
 ```
 
-Tests cover paired imports in either order, explicit design creation, retained navigation state, wheel scrolling and page-end reachability, laptop/tablet/phone layouts, local import/PDF inventory, whole-book styles, issue repairs, undo, text/description localization, accessibility, save/resume, export/reimport, source-crop provenance and mocked OpenAI requests. AI routing checks verify the two model roles, reduced context, exact task accounting, protected quiz text, contrast validation, cancellation and plan reuse. BYOK browser checks verify consent, key clearing, no key persistence, constrained proposals, retries and accessible review UI; no real API key or paid request is used.
+Tests cover paired imports in either order, explicit design creation, retained navigation state, wheel scrolling and page-end reachability, laptop/tablet/phone layouts, local import/PDF inventory, whole-book styles, issue repairs, undo, text/description localization, accessibility, save/resume, export/reimport, source-crop provenance and mocked OpenAI requests. AI routing checks verify the two model roles, reduced context, exact task accounting, protected quiz text, contrast validation, cancellation and plan reuse. BYOK browser checks verify consent, encrypted credential persistence, session-only mode, disconnect deletion, absence of keys from projects/exports, constrained proposals, retries and accessible review UI. Recovery checks close and relaunch a persistent Chrome profile, test storage failure, legacy migration, conflicting tabs and portable backups. Full-design tests exercise source batches, brand planning, safe section assignment and resuming after failures; no real API key or paid request is used.
 
 Private real-book regressions can be run with `ADT_TEST_ZIP` and `ADT_TEST_PDF` environment variables. They verified 94 PDF pages and 92 ADT sections, actual Next/Back at desktop/phone widths, nine quizzes, response persistence and all embedded cache entries. The full layout scanner completed 184 section/width checks with zero axe violations, no broken images and one wide-table review flag. These results concern the tested book, not arbitrary inputs.
 

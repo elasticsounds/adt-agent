@@ -7,6 +7,6 @@ Start `npm start` on port 8890 before browser tests. The tests use an installed 
 - `node tests/reader-export.mjs` serves that exported ZIP temporarily on port 8892, visits every section via the original Next controls at 1200/390px, checks nine quizzes and verifies response persistence.
 - `node tests/layout-real.mjs` scans every exported real-book section through the application's own isolated layout scanner.
 
-Paid AI calls are not made. OpenAI Responses requests are intercepted by Playwright and fulfilled with test responses. Keys are checked for exclusion from persistence and exports.
+Paid AI calls are not made. OpenAI Responses requests are intercepted by Playwright and fulfilled with test responses. Keys are checked for encryption in a separate credential store and exclusion from project data and exports. Persistence tests relaunch a real Chrome profile, migrate earlier saves and check conflicting tabs and failed writes. Full-design tests verify all source images, resumable Sol/Luna stages, guarded assignments and real example exports. Live model quality and account access are not verified by mocked calls.
 
 Reports/screenshots go in `tests/results/` and are excluded from distributable archives. Some regression inputs are user-provided local files; those files and their exported test copies are not packaged with the application.
