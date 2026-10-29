@@ -1,5 +1,6 @@
-import {Preview} from './preview.mjs?v=0.8.1';
-import {parse,text,serialize,resolvePath} from './core.mjs?v=0.8.1';
+import {snapshotReaderArea,installReaderAnnotations} from './annotation-capture.mjs?v=0.9.0';
+import {Preview} from './preview.mjs?v=0.9.0';
+import {parse,text,serialize,resolvePath} from './core.mjs?v=0.9.0';
 
 // Run the imported Studio reader, not a replacement UI. Only its file transport,
 // browser history and storage are adapted for an opaque, local-only iframe.
@@ -18,10 +19,12 @@ export class Reader {
   else if(m.type==='ready'){clearTimeout(this.timer);this.resolve?.({ready:true});this.resolve=null;}
   else if(m.type==='page'){const href=this.path(m.url);if(this.book.spine.some(p=>p.href===href)){this.href=href;this.options.onNavigate?.(href);}}
   else if(m.type==='navigate'){const href=this.path(m.url);if(this.book.spine.some(p=>p.href===href))this.options.onFullNavigate?.(href);}
+  else if(typeof m.type==='string'&&m.type.startsWith('annotation-')){this.options.onAnnotation?.(m,this.href);}
   else if(m.type==='storage'&&typeof m.key==='string'&&m.key.length<500&&(m.value===null||typeof m.value==='string'&&m.value.length<100000)){
    if(m.value===null)delete this.state[m.key];else this.state[m.key]=m.value;this.options.onStorage?.();
   }
  }
+ annotationMode(active){this.frame?.contentWindow.postMessage({readerToken:this.token,type:'annotation-mode',active},'*');}
  path(value){try{const u=new URL(value,'https://adt.local/'+this.href);return u.origin==='https://adt.local'?decodeURIComponent(u.pathname.slice(1)):null;}catch{return null;}}
  document(href,boot){
   const d=parse(text(this.files,href));for(const n of d.querySelectorAll('base,meta[http-equiv],iframe,object,embed,link[rel=manifest],link[rel=prefetch],link[rel=preload]'))n.remove();
@@ -40,7 +43,7 @@ export class Reader {
   const style=d.createElement('style');style.textContent=`html,body{height:auto!important;min-height:0!important;overflow-y:visible!important}body{display:block!important}[data-adt-embed-flow],main,#content{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important}#interface-container{position:relative!important;min-height:88px}#interface-container>div{position:relative!important;inset:auto!important}#nav-container{position:relative!important}html{scrollbar-width:none}`;d.head.append(style);
   if(boot){
    const csp=d.createElement('meta');csp.httpEquiv='Content-Security-Policy';csp.content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' data:; img-src data:; font-src data:; media-src data:; connect-src 'none'; frame-src 'none'; worker-src blob:; form-action 'none'; base-uri 'none';";
-   const script=d.createElement('script');script.textContent=`(${embed.toString()})(${JSON.stringify({token:this.token,href,state:this.state}).replace(/</g,'\\u003c')});`;d.head.prepend(script);d.head.prepend(csp);
+   const script=d.createElement('script');script.textContent=`(${embed.toString()})(${JSON.stringify({token:this.token,href,state:this.state}).replace(/</g,'\\u003c')});(${installReaderAnnotations.toString()})(${JSON.stringify(this.token)},${snapshotReaderArea.toString()});`;d.head.prepend(script);d.head.prepend(csp);
   }
   return serialize(d);
  }

@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {normalizeElementStyle} from '../public/src/element-edits.mjs';
+import {validatePlan,validateExecution,buildHandoff} from '../public/src/ai.mjs';
+assert.deepEqual(normalizeElementStyle('{"width":60,"marginInline":"auto","display":"block"}'),[['width','60%'],['margin-inline','auto'],['display','block']]);
+for(const value of ['{}','null','[]','{"position":"fixed"}','{"color":"white"}','{"width":0}','{"lineHeight":0.2}','{"width":"80"}','{"__proto__":{}}',{width:Infinity},{padding:NaN}])assert.throws(()=>normalizeElementStyle(value));
+const data={image:'data:image/jpeg;base64,AAAA',context:{section:'one',text:[],images:[{index:0},{index:1}],selection:{source:'book',href:'one.html',rect:{x:1,y:2,w:30,h:40},targets:[{id:'selection-1',tag:'img',path:[0]}],imageIndices:[0]}}};
+const plan={message:'Centre only this image.',tasks:[{id:'centre',kind:'elementStyle',target:'selection-1',instruction:'Centre the selected image.',context_ids:[],requires_image:true}]};
+assert.equal(validatePlan(plan,data),plan);assert.throws(()=>validatePlan({...plan,tasks:[{...plan.tasks[0],target:'selection-2'}]},data));
+const result={message:'Ready',results:[{task_id:'centre',status:'completed',value:'{"width":60,"display":"block","marginInline":"auto"}',note:'Centred.'}]};
+assert.equal(validateExecution(result,plan,data).operations[0].type,'elementStyle');assert.throws(()=>validateExecution({...result,results:[{...result.results[0],value:'{"position":"absolute"}'}]},plan,data));
+const handoff=buildHandoff(data,plan);assert.equal(handoff.selection.targets[0].id,'selection-1');assert.equal(handoff.image,undefined);assert.deepEqual(handoff.text,[]);
+const alt={...plan,tasks:[{...plan.tasks[0],kind:'alt',target:'0'}]};validatePlan(alt,data);assert.throws(()=>validatePlan({...alt,tasks:[{...alt.tasks[0],target:'1'}]},data));assert.throws(()=>validatePlan(alt,{...data,context:{...data.context,selection:{...data.context.selection,source:'pdf'}}}));
+console.log('Selected-object styles, missing targets, bounded values, crop-grounded image descriptions and minimal handoffs passed.');
