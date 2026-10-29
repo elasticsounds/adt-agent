@@ -1,0 +1,13 @@
+{
+  "title": "Our shared world",
+  "languages": {
+    "default": "en",
+    "available": [
+      "en"
+    ]
+  },
+  "features": {
+    "activities": true,
+    "state": true
+  }
+}

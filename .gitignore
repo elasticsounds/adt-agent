@@ -1,0 +1,7 @@
+node_modules/
+tests/results/
+.env
+.env.*
+.DS_Store
+*.zip
+release.json
