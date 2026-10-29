@@ -6,12 +6,14 @@ A website for restyling and reviewing existing ADT Studio books against their so
 
 ## Use the website
 
-1. Open the published website and choose **Explore a sample**, or import an ADT ZIP/folder and source PDF.
-2. Use **Design system** to adjust shared typography, color and spacing. Apply the design to the whole book.
-3. Use **Review issues** for supported automatic repairs and editorial review. Check every section at desktop and phone widths.
-4. For AI assistance, choose **Connect OpenAI**, enter your own project API key. **GPT-6.1 Sol plans** with medium reasoning, then **GPT-6 Luna executes** with low reasoning. Your account needs access to both models.
-5. In Chat, choose **AI · Sol → Luna**, approve sending the selected page context, then send your request. Review and apply the proposed edits.
+1. On **Overview**, import the ADT ZIP/folder and its matching PDF, in either order. Both stay visible with their filenames and page/section counts; importing does not take you away from this step.
+2. Choose **Create design system**. The fixed component library is applied across the book using a PDF-derived accent adapted for contrast, while retaining the book’s own font. Existing ADT Agent designs and edits are retained. Refine the shared typography, color and spacing in **Design system**.
+3. Open **Book & source** to read the book and compare the PDF. Use the section picker or optional section list; hide the tools for more reading room. The book, PDF and tools scroll independently. Overview retains both files, the current section and edits. Use **Save locally** to preserve a project across a refresh or browser restart.
+4. Use **Review issues** for supported automatic repairs and editorial review. Check every section at desktop and phone widths.
+5. For AI assistance, choose **Connect OpenAI** and enter your project API key. **GPT-6.1 Sol plans** with medium reasoning, then **GPT-6 Luna executes** with low reasoning. In Chat, choose **AI · Sol → Luna**, approve sharing the selected page context, and review the proposed edits before applying them. Both models must be available to your account.
 6. **Validate & export** produces the ADT, editable Tailwind component library and review report.
+
+You can explicitly continue without a PDF to inspect an ADT, then add its source later from Overview. The brand button and workspace navigation keep the current project loaded; they do not reload the website.
 
 Connecting a key makes no API request. API usage is charged to the user's OpenAI account when an AI request is sent. Use a personal project key with appropriate limits; both models must be available to your account. The app never silently substitutes a different model.
 
@@ -79,7 +81,7 @@ With the local server running and Chrome installed:
 npm test
 ```
 
-Tests cover local import/PDF inventory, whole-book styles, issue repairs, undo, text/description localization, accessibility, save/resume, export/reimport, source-crop provenance and mocked OpenAI requests. AI routing checks verify the two model roles, reduced context, exact task accounting, protected quiz text, contrast validation, cancellation and plan reuse. BYOK browser checks verify consent, key clearing, no key persistence, constrained proposals, retries and accessible review UI; no real API key or paid request is used.
+Tests cover paired imports in either order, explicit design creation, retained navigation state, wheel scrolling and page-end reachability, laptop/tablet/phone layouts, local import/PDF inventory, whole-book styles, issue repairs, undo, text/description localization, accessibility, save/resume, export/reimport, source-crop provenance and mocked OpenAI requests. AI routing checks verify the two model roles, reduced context, exact task accounting, protected quiz text, contrast validation, cancellation and plan reuse. BYOK browser checks verify consent, key clearing, no key persistence, constrained proposals, retries and accessible review UI; no real API key or paid request is used.
 
 Private real-book regressions can be run with `ADT_TEST_ZIP` and `ADT_TEST_PDF` environment variables. They verified 94 PDF pages and 92 ADT sections, actual Next/Back at desktop/phone widths, nine quizzes, response persistence and all embedded cache entries. The full layout scanner completed 184 section/width checks with zero axe violations, no broken images and one wide-table review flag. These results concern the tested book, not arbitrary inputs.
 
