@@ -1,3 +1,4 @@
+import {mockDesignAnalysis,connectTestKey} from './mock-design-analysis.mjs';
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
@@ -11,8 +12,9 @@ for(const name of manifest)files[name]=new Uint8Array(await readFile('public/dem
 const pageName='pg001_sec001.html';let html=new TextDecoder().decode(files[pageName]);
 html=html.replace('<body>','<body style="height:100vh;overflow:hidden"><div style="height:100vh;overflow:hidden">').replace('</body>','</div></body>').replace('</main>',Array.from({length:35},(_,i)=>'<p>Reading line '+i+': every part of this page must remain reachable.</p>').join('')+'<p id="last-line">End of the complete reading page.</p></main>');files[pageName]=new TextEncoder().encode(html);
 const archive={name:'A complete textbook with a long descriptive filename.zip',mimeType:'application/zip',buffer:Buffer.from(zipSync(files))};
-await mkdir('tests/results',{recursive:true});const b=await chromium.launch({channel:'chrome',headless:true});const p=await b.newPage({viewport:{width:1280,height:800}}),errors=[],external=[],checks=[];p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{if(/^https?:/.test(r.url())&&!r.url().startsWith(new URL(base).origin))external.push(r.url())});
+await mkdir('tests/results',{recursive:true});const b=await chromium.launch({channel:'chrome',headless:true});const p=await b.newPage({viewport:{width:1280,height:800}}),errors=[],external=[],checks=[];p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{if(/^https?:/.test(r.url())&&!r.url().startsWith(new URL(base).origin)&&!r.url().startsWith('https://api.openai.com/'))external.push(r.url())});
 const idle=()=>p.waitForFunction(()=>document.body.dataset.busy!=='true');
+const mockAnalysis=await mockDesignAnalysis(p);
 async function check(name,fn){await fn();checks.push(name);console.log('PASS '+name)}
 async function bookFrame(){await p.waitForFunction(()=>document.querySelector('#book-preview').dataset.ready==='true'&&!document.querySelector('#book-preview').hidden&&document.querySelector('#book-preview').srcdoc.includes('last-line'));const f=p.frames().find(f=>f.parentFrame());await f.waitForSelector('#last-line',{state:'attached'});return f;}
 try{
@@ -27,7 +29,7 @@ try{
  });
  await check('Explicit design creation uses source colors with accessible contrast',async()=>{
   for(const color of ['#ffee22','#fafafa','#000000','#ff0022','#a8c090'])assert.ok(contrastChecks(designFromPalette([color])).every(c=>c.ratio>=4.5));
-  await p.click('#create-design');await idle();assert.equal(await p.locator('#show-components').getAttribute('aria-pressed'),'true');assert.match(await p.locator('#pdf-evidence').textContent(),/4 physical pages inventoried/);assert.ok(parseFloat((await p.locator('#contrast-result').textContent()).match(/[\d.]+/)[0])>=4.5);await p.screenshot({path:'tests/results/usability-design.png',fullPage:true});
+  await connectTestKey(p);await p.check('#design-ai');await p.click('#create-design');await idle();assert.equal(await p.locator('#show-components').getAttribute('aria-pressed'),'true');assert.match(await p.locator('#pdf-evidence').textContent(),/4 physical pages inventoried/);assert.ok(parseFloat((await p.locator('#contrast-result').textContent()).match(/[\d.]+/)[0])>=4.5);await p.screenshot({path:'tests/results/usability-design.png',fullPage:true});
  });
  await check('Wide workspace fits a laptop and all reading content scrolls to its end',async()=>{
   await p.click('[data-view=book]');await p.click('#show-book');const frame=await bookFrame();const bounds=await p.locator('#book-preview').boundingBox(),footer=await p.locator('.preview-footer').boundingBox();assert.ok(bounds.width>850);assert.ok(footer.y+footer.height<=801);

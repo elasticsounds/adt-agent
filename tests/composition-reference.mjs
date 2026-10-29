@@ -1,3 +1,4 @@
+import {mockDesignAnalysis,connectTestKey} from './mock-design-analysis.mjs';
 import {chromium} from 'playwright';
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
@@ -7,6 +8,7 @@ assert.ok(!(await readFile(raw+'/pg001_sec001.html','utf8')).includes('pdf-docum
 const out='tests/results/compositions';await mkdir(out,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
 const context=await browser.newContext({viewport:{width:1440,height:1000}}),p=await context.newPage(),errors=[],checks=[];
+const mockAnalysis=await mockDesignAnalysis(p);
 p.on('pageerror',e=>errors.push(e.message));
 const ready=()=>p.waitForFunction(()=>document.body.dataset.ready==='true'&&document.body.dataset.busy!=='true',null,{timeout:180000});
 const frameReady=()=>p.waitForFunction(()=>document.querySelector('#book-preview').dataset.ready==='true',null,{timeout:30000});
@@ -16,8 +18,8 @@ try{
  await p.locator('#pdf-file').setInputFiles(source);await ready();
  assert.equal(await p.evaluate(()=>folio.source.inventory.length),94);
  const before=await p.evaluate(()=>({html:Object.fromEntries(folio.book.spine.map(s=>[s.href,new TextDecoder().decode(folio.book.files.get(s.href))])),count:folio.book.spine.length}));
- await p.evaluate(()=>document.querySelector('#design-ai').checked=false);await p.click('#create-design');await ready();
- const design=await p.evaluate(()=>folio.book.design);assert.ok(design?.draft,await p.locator('#toast').textContent());assert.equal(design.draft.examples.length,6);
+ await connectTestKey(p);await p.check('#design-ai');await p.click('#create-design');await ready();
+ const design=await p.evaluate(()=>folio.book.design);assert.ok(design?.draft,await p.locator('#toast').textContent());assert.equal(design.draft.examples.length,6);assert.equal(design.method,'ai-guided-reference-compositions');assert.equal(design.analysis.pagesReviewed,94);assert.equal(design.analysis.sectionsAssigned,92);
  assert.equal(await p.evaluate(()=>folio.book.validate().valid),true);
  const preservation=await p.evaluate(async()=>{const {designPreviewBook}=await import('./src/compositions.mjs?v=0.6.0');return designPreviewBook(folio.book).validate();});assert.equal(preservation.valid,true,JSON.stringify(preservation.failures));checks.push('Raw 92-section ADT and 94-page source; six composed examples');
  assert.deepEqual(await p.evaluate(()=>Object.fromEntries(folio.book.spine.map(s=>[s.href,new TextDecoder().decode(folio.book.files.get(s.href))]))),before.html);checks.push('Gallery generation leaves every original book section unchanged');

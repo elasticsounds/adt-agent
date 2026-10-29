@@ -1,5 +1,5 @@
-import {guideDocument} from './design-system.mjs?v=0.6.0';
-import {parse,resolvePath,relative,text,serialize,enc} from './core.mjs?v=0.6.0';
+import {guideDocument} from './design-system.mjs?v=0.6.1';
+import {parse,resolvePath,relative,text,serialize,enc} from './core.mjs?v=0.6.1';
 const mime=p=>({css:'text/css',js:'text/javascript',svg:'image/svg+xml',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',woff:'font/woff',woff2:'font/woff2',ttf:'font/ttf',otf:'font/otf',mp3:'audio/mpeg'})[p.split('.').pop().toLowerCase()]||'application/octet-stream';
 export class Preview {
  constructor(){this.urls=new Map();this.rev=null;this.axe=null;this.callbacks=new Map();this.scrollFrames=new Map();window.addEventListener('message',e=>{const scroll=this.scrollFrames.get(e.data?.folioToken);if(scroll&&e.source===scroll.frame.contentWindow&&e.data.type==='section'&&typeof e.data.href==='string'){scroll.onNavigate?.(e.data.href);return;}if(scroll&&e.source===scroll.frame.contentWindow&&e.data.type==='scroll'&&Number.isFinite(e.data.top)){scroll.onScroll(Math.max(0,e.data.top));return;}const cb=this.callbacks.get(e.data?.folioToken);if(cb&&e.source===cb.frame.contentWindow){this.callbacks.delete(e.data.folioToken);clearTimeout(cb.timer);cb.resolve(e.data)}})}

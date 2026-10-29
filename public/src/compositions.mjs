@@ -1,4 +1,4 @@
-import {parse,serialize,relative,resolvePath,enc,dec,sha,validateTokens,contrast} from './core.mjs?v=0.6.0';
+import {parse,serialize,relative,resolvePath,enc,dec,sha,validateTokens,contrast} from './core.mjs?v=0.6.1';
 
 export const COMPOSITION_VERSION=1;
 const referenceHashes=new Set(['e3154247e6984557f9f9852a705a8bbed818a60ae4aba93baf9e0a07cf65bd69','d21e854edf195029e8ad8a23342f9781796baa050fa0a83c45c76402d1cf742d']);
@@ -118,7 +118,8 @@ export async function buildCompositionDraft(book,source,system,profile,onProgres
  }
  // Commit only after every composition preserves its content and controls.
  book.snapshot('Created six PDF-guided design examples');
- system={...system,version:2,tokens,method:'verified-composition-profile',status:'Six composed examples · awaiting visual approval',notes:'The first six compositions use the verified reference recipe and artwork extracted from your PDF. The rest of the book remains unchanged. All source pages are inventoried; unreviewed matches are still provisional.',draft:{version:COMPOSITION_VERSION,profile:profile.id,stage:'review',brand:profile.brand,pages,contracts,assets:provenance,examples:profile.examples.map(({href,kind,name,page,region,sourceNote})=>({href,kind,name,page,region,sourceNote}))}};
+ const analysis=system.method==='ai-guided'?{method:system.method,notes:system.notes,tokens:system.tokens,pagesReviewed:system.observations.length,sectionsAssigned:system.sections.length}:null;
+ system={...system,version:2,tokens,analysis,method:analysis?'ai-guided-reference-compositions':'verified-composition-profile',status:analysis?'AI reviewed · six composed examples · awaiting visual approval':'Six composed examples · awaiting visual approval',notes:(analysis?'AI source review is complete. ':'')+'The first six compositions use the verified reference recipe and artwork extracted from your PDF. The rest of the book remains unchanged. All source pages are inventoried; unreviewed matches are still provisional.',draft:{version:COMPOSITION_VERSION,profile:profile.id,stage:'review',brand:profile.brand,pages,contracts,assets:provenance,examples:profile.examples.map(({href,kind,name,page,region,sourceNote})=>({href,kind,name,page,region,sourceNote}))}};
  for(const example of profile.examples){const section=system.sections.find(s=>s.href===example.href);Object.assign(section,{sourcePage:example.page,basis:'verified-reference-region',confidence:1,composition:example.kind,title:example.name});}
  system.families=profile.examples.map(e=>({id:e.kind,name:e.name,examples:[e.href],sections:[system.sections.find(s=>s.href===e.href).id],sourcePages:[e.page]}));
  for(const p of system.pages)p.sectionIds=system.sections.filter(s=>s.sourcePage===p.page).map(s=>s.id);
