@@ -9,11 +9,21 @@ A website for restyling and reviewing existing ADT Studio books against their so
 1. Open the published website and choose **Explore a sample**, or import an ADT ZIP/folder and source PDF.
 2. Use **Design system** to adjust shared typography, color and spacing. Apply the design to the whole book.
 3. Use **Review issues** for supported automatic repairs and editorial review. Check every section at desktop and phone widths.
-4. For AI assistance, choose **Connect OpenAI**, enter your own project API key and select a supported model. The default is `gpt-5.4-mini`.
-5. In Chat, choose **AI assistant**, approve sending the selected page context, then send your request. Review and apply the proposed edits.
+4. For AI assistance, choose **Connect OpenAI**, enter your own project API key. **GPT-6.1 Sol plans** with medium reasoning, then **GPT-6 Luna executes** with low reasoning. Your account needs access to both models.
+5. In Chat, choose **AI · Sol → Luna**, approve sending the selected page context, then send your request. Review and apply the proposed edits.
 6. **Validate & export** produces the ADT, editable Tailwind component library and review report.
 
-Connecting a key makes no API request. API usage is charged to the user's OpenAI account when an AI request is sent. Use a personal project key with appropriate limits; the selected model must be available to your account.
+Connecting a key makes no API request. API usage is charged to the user's OpenAI account when an AI request is sent. Use a personal project key with appropriate limits; both models must be available to your account. The app never silently substitutes a different model.
+
+## Sol → Luna workflow
+
+Sol reviews the selected section and creates up to 20 explicit tasks. The client validates their types, targets, evidence and exercise restrictions before handing them to Luna. Luna receives only the assigned tasks and the text, controls or images needed to execute them. Ordinary style edits do not resend reading text or images. Requests with no tasks stop after Sol.
+
+Luna cannot introduce new edit targets: its results reference the approved task IDs, which the client maps back to the plan. Every task must return a completed value or an explicit review item. Unknown tasks, incomplete results, inaccessible color choices and out-of-range settings are rejected before a proposal can be applied. The user sees Sol’s plan, Luna’s proposed edits and any unresolved review items. Application still requires **Apply changes**, and a changed book/page invalidates the proposal.
+
+Planning is capped at 6,000 output tokens and execution at 4,000. If execution fails, **Retry Luna** reuses the validated plan in tab memory for unchanged source content and the same request. It makes one executor call rather than another planning call. There are no automatic retries; retrying can still incur usage charges. Stop AI, disconnect, refresh or a changed key clears the retained plan. Local commands remain available without AI.
+
+These settings reduce repeated context and avoid repeating successful planning; actual cost and output quality depend on the request. Routing tests use mocked Responses API calls, not a live key or paid model benchmark.
 
 ## Key and file privacy
 
@@ -28,7 +38,7 @@ Connecting a key makes no API request. API usage is charged to the user's OpenAI
 
 Browser BYOK is intended for a user supplying their own key to a tool they trust. A browser application cannot protect a key from that user's browser, extensions or compromised application code. Do not embed a shared organization/service key in this site. OpenAI recommends server-side secret management for applications distributing a developer-owned credential. This app distributes no credential; a future centrally managed service would need an authenticated backend and server-side secrets.
 
-Official references: [API key guidance](https://developers.openai.com/api/docs/guides/production-best-practices#api-keys), [structured output](https://developers.openai.com/api/docs/guides/structured-outputs), [default model capabilities](https://developers.openai.com/api/docs/models/gpt-5.4-mini).
+Official references: [API key guidance](https://developers.openai.com/api/docs/guides/production-best-practices#api-keys), [structured output](https://developers.openai.com/api/docs/guides/structured-outputs), [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol), [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna).
 
 ## Local development
 
@@ -51,7 +61,7 @@ The built site is `public/`. GitHub Pages deploys only that folder through `.git
 - Fix supported issues in one batch: shared styles, configured language, mobile viewport, responsive images and existing dictionary descriptions. No invented answers or descriptions.
 - Audit every section at 1200px and 390px with axe and layout checks. Distinguish violations, inconclusive checks and editorial review. Imported reader scripts are preserved in export but not executed during these isolated content checks.
 - Edit descriptions and source-language dictionaries. Flag existing narration when its wording changes. Crop source artwork with PDF hash/page/coordinates and image hashes recorded.
-- Local chat commands for common style changes, supported fixes and precise leaf-text edits; optional AI proposes only validated style, text, description, label and component operations.
+- Local chat commands for common style changes, supported fixes and precise leaf-text edits; optional Sol planning and Luna execution propose only validated style, text, description, label and component operations.
 - Undo, local save/resume/delete, source mappings, original/styled preview, component examples, ADT ZIP/report/library export.
 - Synchronize recognized Studio embedded page caches and version edited dependencies, preserving styling through Next/Back.
 
@@ -69,7 +79,7 @@ With the local server running and Chrome installed:
 npm test
 ```
 
-Tests cover local import/PDF inventory, whole-book styles, issue repairs, undo, text/description localization, accessibility, save/resume, export/reimport, source-crop provenance and mocked OpenAI requests. BYOK checks verify consent, key clearing, no key persistence and constrained proposals; no real API key or paid request is used.
+Tests cover local import/PDF inventory, whole-book styles, issue repairs, undo, text/description localization, accessibility, save/resume, export/reimport, source-crop provenance and mocked OpenAI requests. AI routing checks verify the two model roles, reduced context, exact task accounting, protected quiz text, contrast validation, cancellation and plan reuse. BYOK browser checks verify consent, key clearing, no key persistence, constrained proposals, retries and accessible review UI; no real API key or paid request is used.
 
 Private real-book regressions can be run with `ADT_TEST_ZIP` and `ADT_TEST_PDF` environment variables. They verified 94 PDF pages and 92 ADT sections, actual Next/Back at desktop/phone widths, nine quizzes, response persistence and all embedded cache entries. The full layout scanner completed 184 section/width checks with zero axe violations, no broken images and one wide-table review flag. These results concern the tested book, not arbitrary inputs.
 
