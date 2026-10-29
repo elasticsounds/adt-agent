@@ -85,3 +85,35 @@ body[data-adt-composition]>main{width:100%;min-width:0}
  #content.adt-composition :is(.adt-page,.adt-hero,.adt-keywords,.adt-toc-group,.quiz-header,.activity-option){background:Canvas!important;color:CanvasText!important;border:1px solid CanvasText!important}
  #content.adt-composition :is(h1,h2,h3,p,span){color:inherit}
 }
+/* Shared compositions for complete lessons, mixed panels and worksheets. */
+#content.adt-composition [data-composition=flow]{overflow-wrap:break-word}
+#content.adt-composition [data-composition=flow] :is(div,aside,header,figure){min-width:0;max-width:100%}
+#content.adt-composition [data-composition=flow]>:not(:last-child){margin-bottom:var(--adt-space)}
+#content.adt-composition [data-composition=flow] .adt-flow-heading{margin:24px 0 16px}
+#content.adt-composition [data-composition=flow] h1{font-size:1.9rem}
+#content.adt-composition [data-composition=flow] h3{font-size:1.25rem}
+#content.adt-composition [data-composition=flow] .adt-reading-copy{margin:14px 0 24px}
+#content.adt-composition [data-composition=flow] [data-adt-panel]{padding:24px;margin:20px 0;border:1px solid var(--adt-rule);border-radius:14px;background:var(--adt-surface);color:var(--adt-ink)}
+#content.adt-composition [data-composition=flow] [data-adt-panel=reflection]{background:var(--adt-reflection);border-color:var(--adt-reflection-rule)}
+#content.adt-composition [data-composition=flow] [data-adt-panel=practice]{background:var(--adt-practice);border-color:var(--adt-practice-rule)}
+#content.adt-composition [data-composition=flow] [data-adt-panel=brand]{background:var(--adt-accent);color:var(--adt-on-accent)}
+#content.adt-composition [data-composition=flow] [data-adt-panel=brand] :is(h1,h2,h3,p,span){color:inherit}
+#content.adt-composition [data-composition=flow] [data-adt-panel]>:first-child{margin-top:0}
+#content.adt-composition [data-composition=flow] [data-adt-panel]>:last-child{margin-bottom:0}
+#content.adt-composition [data-composition=flow] .adt-flow-image{display:block;max-width:100%;max-height:580px;height:auto;width:auto;object-fit:contain;margin:20px auto;border-radius:10px}
+#content.adt-composition [data-composition=flow] :is(textarea,input:not([type=radio]):not([type=checkbox])){margin:8px 0 16px}
+#content.adt-composition [data-composition=flow] textarea{width:100%;min-height:112px;resize:vertical}
+#content.adt-composition [data-composition=flow] li{margin:14px 0}
+#content.adt-composition [data-composition=flow] label:has(input[type=radio],input[type=checkbox]){min-height:44px;min-width:44px;padding:8px;border:1px solid var(--adt-control-rule);border-radius:7px;background:var(--adt-paper);color:var(--adt-ink)}
+#content.adt-composition [data-composition=flow] label:has(:checked){background:var(--adt-surface);outline:2px solid var(--adt-accent)}
+#content.adt-composition [data-composition=flow] label:has(:focus-visible){outline:3px solid var(--adt-accent);outline-offset:3px}
+#content.adt-composition .adt-table-scroll{overflow-x:auto;max-width:100%;margin:20px 0}
+#content.adt-composition .adt-table-scroll table{border-collapse:collapse;width:100%}
+#content.adt-composition .adt-table-scroll :is(td,th){padding:12px;border:1px solid var(--adt-control-rule);color:var(--adt-ink);font-family:var(--adt-reading)}
+@media(max-width:700px){
+ #content.adt-composition [data-composition=flow] [data-adt-panel]{padding:18px 14px}
+ #content.adt-composition [data-composition=flow] h1{font-size:1.5rem}
+ #content.adt-composition [data-composition=flow] .grid:not(:has(>label input[type=radio])){grid-template-columns:minmax(0,1fr)}
+ #content.adt-composition [data-composition=flow] .flex:has(>.adt-flow-image){flex-wrap:wrap}
+}
+#content.adt-composition [data-composition=flow] .adt-flow-icon{width:56px;height:56px;max-height:56px;flex:0 0 56px;margin:0;object-fit:contain}

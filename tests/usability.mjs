@@ -16,7 +16,7 @@ await mkdir('tests/results',{recursive:true});const b=await chromium.launch({cha
 const idle=()=>p.waitForFunction(()=>document.body.dataset.busy!=='true');
 const mockAnalysis=await mockDesignAnalysis(p);
 async function check(name,fn){await fn();checks.push(name);console.log('PASS '+name)}
-async function bookFrame(){await p.waitForFunction(()=>document.querySelector('#book-preview').dataset.ready==='true'&&!document.querySelector('#book-preview').hidden&&document.querySelector('#book-preview').srcdoc.includes('last-line'));const f=p.frames().find(f=>f.parentFrame());await f.waitForSelector('#last-line',{state:'attached'});return f;}
+async function bookFrame(){await p.waitForFunction(()=>document.querySelector('#book-preview').dataset.ready==='true'&&!document.querySelector('#book-preview').hidden&&document.querySelector('#book-preview').srcdoc.includes('last-line'));const f=await (await p.locator('#book-preview').elementHandle()).contentFrame();await f.waitForSelector('#last-line',{state:'attached'});return f;}
 try{
  await check('Imports stay disabled until the workspace is ready',async()=>{
   const loading=await b.newPage();let release;const gate=new Promise(r=>release=r);await loading.route('**/vendor/components.source.css*',async route=>{await gate;await route.continue()});await loading.goto(base,{waitUntil:'domcontentloaded'});assert.ok(await loading.locator('#adt-file').isDisabled());assert.ok(await loading.locator('#pdf-file').isDisabled());assert.ok(await loading.locator('#app-loading').isVisible());assert.equal(await loading.locator('#app-ui').getAttribute('inert'),'');release();await loading.waitForFunction(()=>document.body.dataset.ready==='true');assert.ok(await loading.locator('#adt-file').isEnabled());assert.ok(await loading.locator('#app-loading').isHidden());await loading.close();
@@ -29,7 +29,7 @@ try{
  });
  await check('Explicit design creation uses source colors with accessible contrast',async()=>{
   for(const color of ['#ffee22','#fafafa','#000000','#ff0022','#a8c090'])assert.ok(contrastChecks(designFromPalette([color])).every(c=>c.ratio>=4.5));
-  await connectTestKey(p);await p.check('#design-ai');await p.click('#create-design');await idle();assert.equal(await p.locator('#show-components').getAttribute('aria-pressed'),'true');assert.match(await p.locator('#pdf-evidence').textContent(),/4 physical pages inventoried/);assert.ok(parseFloat((await p.locator('#contrast-result').textContent()).match(/[\d.]+/)[0])>=4.5);await p.screenshot({path:'tests/results/usability-design.png',fullPage:true});
+  await connectTestKey(p);await p.check('#design-ai');await p.click('#create-design');await idle();assert.ok(await p.locator('#design-view').isVisible());assert.match(await p.locator('#pdf-evidence').textContent(),/4 physical pages inventoried/);assert.ok(parseFloat((await p.locator('#contrast-result').textContent()).match(/[\d.]+/)[0])>=4.5);await p.screenshot({path:'tests/results/usability-design.png',fullPage:true});
  });
  await check('Wide workspace fits a laptop and all reading content scrolls to its end',async()=>{
   await p.click('[data-view=book]');await p.click('#show-book');const frame=await bookFrame();const bounds=await p.locator('#book-preview').boundingBox(),footer=await p.locator('.preview-footer').boundingBox();assert.ok(bounds.width>850);assert.ok(footer.y+footer.height<=801);
@@ -38,7 +38,7 @@ try{
   const top=await frame.evaluate(()=>document.scrollingElement.scrollTop);await p.click('[data-view=start]');assert.match(await p.locator('#adt-file-state').textContent(),/Loaded/);assert.match(await p.locator('#pdf-file-state').textContent(),/Loaded/);await p.click('#continue-book');assert.equal(await frame.evaluate(()=>document.scrollingElement.scrollTop),top);
  });
  await check('Overview and the brand button preserve current section, design and edits',async()=>{
-  await p.selectOption('#section-picker','2');await p.click('[data-panel=chat]');await p.fill('#chat-input','Make the text larger');await p.click('#chat-form button');await idle();const size=await p.locator('[name=fontSize]').inputValue();
+  await p.selectOption('#section-picker','2');await p.click('[data-view=book]');if(await p.locator('#inspector').isHidden())await p.click('#toggle-tools');await p.click('[data-panel=chat]');await p.fill('#chat-input','Make the text larger');await p.click('#chat-form button');await idle();const size=await p.locator('[name=fontSize]').inputValue();
   await p.click('#go-overview');assert.match(await p.locator('#overview-detail').textContent(),/Current section: 3 of 4/);await p.screenshot({path:'tests/results/usability-overview.png',fullPage:true});await p.click('[data-view=book]');assert.equal(await p.locator('#section-picker').inputValue(),'2');assert.equal(await p.locator('[name=fontSize]').inputValue(),size);assert.equal(await p.locator('[data-panel=chat]').getAttribute('aria-pressed'),'true');
  });
  await check('PDF scroll, page navigation and position survive Overview',async()=>{
@@ -49,7 +49,7 @@ try{
   const width=(await p.locator('#preview-stage').boundingBox()).width;await p.click('#toggle-tools');assert.ok((await p.locator('#preview-stage').boundingBox()).width>width+250);await p.click('#toggle-tools');await p.click('#toggle-sections');await p.fill('#page-search','small act');await p.locator('#page-list button').click();assert.equal(await p.locator('#section-picker').inputValue(),'3');await p.click('#toggle-sections');assert.ok(await p.locator('#page-list-panel').isHidden());
  });
  await check('Short laptop, tablet and phone layouts remain reachable and accessible',async()=>{
-  await p.click('[data-panel=style]');await p.selectOption('#section-picker','0');await p.click('#show-book');await bookFrame();await p.addScriptTag({path:'node_modules/axe-core/axe.min.js'});
+  await p.selectOption('#section-picker','0');await p.click('#show-book');await bookFrame();await p.addScriptTag({path:'node_modules/axe-core/axe.min.js'});
   for(const [width,height] of [[1280,720],[1024,768],[1440,900],[390,844]]){
    await p.setViewportSize({width,height});assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));const footer=await p.locator('.preview-footer').boundingBox();if(width>780)assert.ok(footer.y+footer.height<=height+1);
    const violations=await p.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}})).violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})));assert.deepEqual(violations,[],width+'px: '+JSON.stringify(violations));

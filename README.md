@@ -8,10 +8,14 @@ A website for restyling and reviewing existing ADT Studio books against their so
 
 1. On **Overview**, connect your OpenAI API key, then import the ADT ZIP/folder and its matching PDF, in either order. File controls become available once the workspace finishes loading. Both files stay visible with their filenames and page/section counts; importing does not take you away from this step.
 2. Tick **Analyze the full PDF with AI**, then start design creation. The key and this explicit sharing consent are required. Sol reviews every PDF page and plans the brand; Luna assigns every ADT section to a supported page family. Analysis produces a book-specific guide, source coverage and styled examples. The supported 5B reference uses the approved six-example composition gallery after analysis. Refine the shared typography, color and spacing in **Design system**. Source-only families remain visible and missing or uncertain matches remain flagged.
-3. Open **Book & source** to read the book and compare the PDF. Use the section picker or optional section list; hide the tools for more reading room. The book, PDF and tools scroll independently. Overview retains both files, the current section and edits. Files, edits, the PDF, design system, undo history, conversation, drafts and reading position save automatically. The latest project reopens after refresh or a browser restart. **Save now** flushes any pending changes.
-4. Use **Review issues** for supported automatic repairs and editorial review. Check every section at desktop and phone widths.
-5. For book-editing assistance, use your connected OpenAI project key. **GPT-6.1 Sol plans** with medium reasoning, then **GPT-6 Luna executes** with low reasoning. In Chat, choose **AI · Sol → Luna**, approve sharing the selected page context, and review the proposed edits before applying them. Both models must be available to your account.
-6. **Validate & export** produces the ADT, editable Tailwind component library with self-contained real page examples, and review report. **Download project backup** includes both originals and working files, source PDF, undo history and progress so you can move between browsers or devices. **Saved projects** lets you switch books without replacing the earlier project.
+3. **Design system** is a dedicated library: explore the brand guide and page-family examples, and use **Edit design** to change its shared settings. Example navigation is independent of the book’s current page. Design changes remain a draft until applied.
+4. In **Book & source**, press **Apply design to whole book** in the banner above the viewer. Every loaded ADT section receives the shared system, with a completion count and a single Undo checkpoint. Later design edits show **Apply updated design to whole book**. Browse sections with Next / Previous or the section picker. Choose **Side by side** to compare the ADT and matching PDF; each scrolls independently. On phones the comparison panes stack. **Original** shows the imported page for comparison.
+5. **Review issues** is a separate dashboard. Use **Run whole-book review**, filter the findings, **Fix all supported issues**, or open an individual issue in the book. Repairs can be undone; content meaning, image descriptions and other editorial findings remain for human review. Download the complete issue report from this view.
+
+Files, edits, the PDF, design system, undo history, conversation and reading positions save automatically. Refresh restores the active workspace; switching tabs keeps the project loaded. **Save now** flushes pending changes.
+
+6. For book-editing assistance, use your connected OpenAI project key. **GPT-6.1 Sol plans** with medium reasoning, then **GPT-6 Luna executes** with low reasoning. In Chat, choose **AI · Sol → Luna**, approve sharing the selected page context, and review the proposed edits before applying them. Both models must be available to your account.
+7. **Validate & export** produces the ADT, editable Tailwind component library with self-contained real page examples, and review report. **Download project backup** includes both originals and working files, source PDF, undo history and progress so you can move between browsers or devices. **Saved projects** lets you switch books without replacing the earlier project.
 
 You can explicitly continue without a PDF to inspect an ADT, then add its source later from Overview. The brand button and workspace navigation keep the current project loaded; they do not reload the website.
 
@@ -68,7 +72,7 @@ The built site is `public/`. GitHub Pages deploys only that folder through `.git
 
 ## Features and limits
 
-### Composition gallery milestone (0.6)
+### Reference composition gallery
 
 Design generation requires a connected OpenAI API key and the explicit “Analyze the full PDF with AI” checkbox. There is no local-generation fallback when the key is missing, consent is unchecked or analysis fails. File loading, saved-project access and the authored sample preview remain available; they do not trigger paid analysis.
 
@@ -76,7 +80,7 @@ For the verified 5B reference PDF and raw Part 1 Studio export, design creation 
 
 The reusable renderer (`public/src/compositions.mjs`) moves existing bound nodes into fixed semantic components. The book-specific recipe (`public/design/reference-5b.json`) supplies bindings, source regions, roles and semantic colors. It is deliberately separate from `library/compositions.css`. Every candidate must preserve text bindings, controls and answers. A small, scoped helper restores local saving for ungraded written responses; the original quiz and navigation scripts remain intact. The Studio-generated quiz is identified as a companion activity, not an exact printed PDF exercise.
 
-These six pages are an explicit visual review milestone. They do **not** replace the whole book. Style controls update this draft, refresh restores it, and library export uses these composed pages. Only after the gallery is accepted should the same package be extended and applied to the remaining sections. This release does not yet infer arbitrary new composition recipes from another PDF: other books use the existing structural draft workflow. Its AI family/token analysis is not a substitute for composed-page visual acceptance.
+Design generation prepares these six pages for review. Style controls update the draft, refresh restores it, and library export uses the composed examples. In **Book & source**, the explicit **Apply design to whole book** action extends the shared package to every loaded section; until that action, the book remains unchanged. This release does not yet infer arbitrary new composition recipes from another PDF: other books use the existing structural draft workflow. Its AI family/token analysis is not a substitute for composed-page visual acceptance.
 
 - Inventory every physical PDF page and ADT reading-order entry; extract page geometry, text evidence, possible blanks, a suggested palette and font-family evidence.
 - Fixed, scoped Tailwind 4.3.3 components without preflight. Control text/paper/accent/panel colors, reading font/size, line spacing, page width, component spacing and corners. Four supported foreground/background pairings must meet 4.5:1 contrast before application. PDF palette suggestions are adapted for contrast.
@@ -116,3 +120,13 @@ RAW_ADT='/path/to/raw-studio-folder' SOURCE_PDF='/path/to/source.pdf' node tests
 It requires the raw reference export, checks all source pages are inventoried, verifies six composed pages at desktop and phone widths, confirms bound text visibility and loaded fonts, and checks that generation leaves all original book sections unchanged. Images and reports stay in ignored `tests/results/`. Browser screenshots still require visual inspection; passing preservation checks alone is not visual acceptance.
 
 Dependency source/license notices are in `public/vendor`. [PDF.js](https://mozilla.github.io/pdf.js/examples/), [fflate](https://github.com/101arrowz/fflate), and [W3C contrast guidance](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html).
+
+## Separate workspaces and whole-book application (0.7)
+
+The six reference compositions remain the reviewable design library. **Apply design to whole book** uses the same typography, colors and semantic components for every section in the loaded ADT. The six example recipes retain their source-backed compositions; mixed lessons and worksheets keep their original content/control structure with shared presentation. Contents continuations and all Studio quizzes receive the corresponding components. Tables retain their row/column relationships in keyboard-accessible scroll regions. This styles the supplied ADT; it does not manufacture missing sections for unmatched PDF pages.
+
+Application stages every page and checks content bindings, controls, answer keys, script identities and resources before changing the working copy. The live book has a separate token stylesheet from the design draft, so editing the library cannot silently change the book. Application, reapplication and regeneration preserve one-step Undo and existing content edits. Export updates the embedded reader cache and versions the applied styles, so Next / Back retain the design.
+
+The embedded ADT viewer isolates imported scripts while rendering the current book page. The exported ADT retains the original reader, activities and response behavior. Review checks cover the isolated content at wide and phone widths; they are not a certification of pedagogical correctness or every screen-reader interaction.
+
+Additional browser checks: `node tests/workspaces.mjs`; `RAW_ADT=/path/to/original node tests/book-application.mjs` after the reference-gallery fixture exists. The latter applies all 92 reference sections, checks Undo and reapplication, scans 184 section/width combinations and exports the applied reader. Reference artwork and test outputs stay private under ignored `tests/results/`.

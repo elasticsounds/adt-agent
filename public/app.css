@@ -20,3 +20,33 @@
 .design-consent{padding:14px 20px;border:1px solid var(--border);border-radius:8px;margin-top:14px;background:#fff}.design-consent .check{font-size:12px}.design-consent .hint{font-size:11px}#design-library-controls{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;background:#f4f8f2;border-bottom:1px solid var(--border)}#design-library-controls label{font-size:11px;font-weight:650}#design-example{flex:1;min-width:100px;font-size:12px}#design-library-status{flex-basis:100%;font-size:10px;margin:0;color:#445e50}
 
 .api-setup{display:flex;align-items:center;justify-content:space-between;gap:28px;margin:20px 0 30px;padding:24px;border:2px solid #235e50;border-radius:14px;background:#eef5ef}.api-setup h2{margin-bottom:10px}.api-setup p{margin-bottom:8px}.api-setup .hint{max-width:75ch}.api-setup>.button{flex-shrink:0}.api-setup.connected{border-width:1px}.design-consent h3{margin:0 0 10px}.analysis-recommendation{margin:0 0 14px;color:#243c37}.design-consent.needs-consent{border-color:#9b5b1e;background:#fffaf0}@media(max-width:780px){.api-setup{align-items:stretch;flex-direction:column;gap:12px;padding:18px}}
+/* Separate spaces for the library, book and review. */
+#design-view{max-width:none;height:calc(100dvh - var(--app-header-height,120px));min-height:400px;display:flex;flex-direction:column;padding:20px 24px;overflow:hidden}
+#design-view .workspace-heading p:not(.eyebrow),#issues-view .workspace-heading p:not(.eyebrow){font-size:13px;margin:8px 0 0;color:var(--muted)}
+.design-actions,.apply-actions,.review-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#design-editor{display:grid;grid-template-columns:minmax(0,1fr);flex:1;min-height:0;overflow:hidden;border:1px solid var(--border);border-radius:12px;background:#fff}
+#design-editor[data-tools=open]{grid-template-columns:minmax(0,1fr) 310px}
+.design-preview-column{display:flex;flex-direction:column;min-height:0;min-width:0}
+.design-size-controls{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;font-size:11px;border-bottom:1px solid var(--border)}
+#design-stage{flex:1;min-height:0;overflow:auto;background:#f4f5f2}
+#design-preview{display:block;width:100%;height:100%;border:0;background:#fff;margin:auto}
+#design-stage.phone #design-preview{width:390px;max-width:100%}
+#design-inspector{overflow:auto}#design-inspector .inspector-panel{overflow:visible}
+.book-apply-banner{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 20px;margin:0 0 14px;border:1px solid #abc9b6;border-radius:12px;background:#eef5ef;flex:none}
+.book-apply-banner .eyebrow{font-size:9px;margin:0 0 4px}.book-apply-banner h2{font-size:17px;margin:0 0 6px}.book-apply-banner p:not(.eyebrow){font-size:12px;margin:0;max-width:70ch}.apply-actions{flex-shrink:0;justify-content:flex-end}.apply-actions .text-button{font-size:12px}
+#adt-pane{height:100%;min-width:0;min-height:0;display:flex;flex-direction:column}#adt-pane #book-preview{flex:1;min-height:0}
+#preview-stage.compare{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;overflow:hidden;padding:0 10px 10px}
+#preview-stage.compare #pdf-preview{height:100%;overflow:auto;min-width:0;overscroll-behavior:contain;scrollbar-gutter:stable;background:#f7f9f5;border:1px solid var(--border);border-radius:8px;padding:0 10px 14px}
+#preview-stage.compare #adt-pane{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:white}
+.pane-label{font-size:11px;font-weight:650;margin:0;padding:10px;background:#edf3ee;color:var(--green);flex:none}
+#preview-stage.compare.phone #book-preview{width:100%;max-width:390px}
+#issues-view{max-width:1280px;margin:auto}#issues-view .workspace-heading h1{font-size:32px}
+.review-actions{margin:24px 0}#review-summary{margin:24px 0}#review-summary .check-card .value{font-size:30px}
+#review-panel>.stack{max-width:320px;margin:24px 0}#issue-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}#issue-list .issue-card{margin:0;padding:20px}#issue-list .issue-type{gap:10px}#issue-list .issue-type span{overflow-wrap:anywhere}#issue-list .empty-note{grid-column:1/-1;padding:32px;background:#fff;border:1px solid var(--border);border-radius:12px}
+@media(max-width:1100px){.book-apply-banner{align-items:flex-start}.apply-actions{max-width:260px}.book-apply-banner h2{font-size:15px}.book-apply-banner p:not(.eyebrow){font-size:11px}}
+@media(max-width:780px){
+ #design-view{height:auto;overflow:visible;padding:16px 10px}#design-editor,#design-editor[data-tools=open]{display:flex;flex-direction:column} .design-preview-column{height:75dvh;min-height:470px}#design-inspector{max-height:75dvh}#design-view .workspace-heading{align-items:flex-start}.design-actions{width:100%}
+ .book-apply-banner{flex-direction:column;gap:12px;padding:14px}.apply-actions{max-width:none;justify-content:flex-start}.book-apply-banner h2{font-size:17px}
+ #preview-stage.compare{display:flex;flex-direction:column;overflow:auto}#preview-stage.compare #adt-pane,#preview-stage.compare #pdf-preview{height:65dvh;min-height:380px;flex:none;width:100%}
+ #editor:has(#preview-stage.compare) .preview-column{height:85dvh;min-height:560px}#issue-list{grid-template-columns:1fr}#issues-view .workspace-heading h1{font-size:27px}
+}
