@@ -6,7 +6,7 @@ A website for restyling and reviewing existing ADT Studio books against their so
 
 ## Use the website
 
-1. On **Overview**, import the ADT ZIP/folder and its matching PDF, in either order. Both stay visible with their filenames and page/section counts; importing does not take you away from this step.
+1. On **Overview**, import the ADT ZIP/folder and its matching PDF, in either order. File controls become available once the workspace finishes loading. Both files stay visible with their filenames and page/section counts; importing does not take you away from this step.
 2. Choose **Create design system**. The fixed component library is applied across the book using a PDF-derived accent adapted for contrast, while retaining the book’s own font. Existing ADT Agent designs and edits are retained. Refine the shared typography, color and spacing in **Design system**.
 3. Open **Book & source** to read the book and compare the PDF. Use the section picker or optional section list; hide the tools for more reading room. The book, PDF and tools scroll independently. Overview retains both files, the current section and edits. Use **Save locally** to preserve a project across a refresh or browser restart.
 4. Use **Review issues** for supported automatic repairs and editorial review. Check every section at desktop and phone widths.

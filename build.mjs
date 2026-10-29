@@ -1,4 +1,4 @@
-import {cp,mkdir,readFile,writeFile} from 'node:fs/promises';
+import {cp,mkdir,readFile,writeFile,readdir} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 await mkdir('public/vendor',{recursive:true});
 for(const [from,to] of [
@@ -15,3 +15,12 @@ for(const [from,to] of [
 execFileSync('node_modules/.bin/tailwindcss',['-i','library/components.css','-o','public/vendor/components.css','--minify'],{stdio:'inherit'});
 await cp('library/components.css','public/vendor/components.source.css');
 console.log('Local vendor assets and fixed Tailwind components ready.');
+
+// Keep a newly loaded page from mixing cached modules from an older release.
+const {version}=JSON.parse(await readFile('package.json','utf8'));
+for(const name of await readdir('public/src'))if(name.endsWith('.mjs')){
+ const path='public/src/'+name,source=await readFile(path,'utf8');
+ await writeFile(path,source.replace(/(['"])(\.\/[a-z-]+\.mjs)(?:\?v=[\w.-]+)?\1/g,(_,quote,file)=>quote+file+'?v='+version+quote));
+}
+const entry=await readFile('public/index.html','utf8');
+await writeFile('public/index.html',entry.replace(/(href="app\.css|src="src\/app\.mjs)(?:\?v=[\w.-]+)?"/g,(_,prefix)=>prefix+'?v='+version+'"'));

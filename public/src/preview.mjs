@@ -1,4 +1,4 @@
-import {parse,resolvePath,relative,text,serialize,enc} from './core.mjs';
+import {parse,resolvePath,relative,text,serialize,enc} from './core.mjs?v=0.4.1';
 const mime=p=>({css:'text/css',js:'text/javascript',svg:'image/svg+xml',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',woff:'font/woff',woff2:'font/woff2',ttf:'font/ttf',otf:'font/otf',mp3:'audio/mpeg'})[p.split('.').pop().toLowerCase()]||'application/octet-stream';
 export class Preview {
  constructor(){this.urls=new Map();this.rev=null;this.axe=null;this.callbacks=new Map();window.addEventListener('message',e=>{const cb=this.callbacks.get(e.data?.folioToken);if(cb&&e.source===cb.frame.contentWindow){this.callbacks.delete(e.data.folioToken);clearTimeout(cb.timer);cb.resolve(e.data)}})}

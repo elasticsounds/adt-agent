@@ -1,4 +1,4 @@
-import {defaults,validateTokens,contrastChecks} from './core.mjs';
+import {defaults,validateTokens,contrastChecks} from './core.mjs?v=0.4.1';
 // The PDF palette is visual evidence. Preserve the reader's font and use the
 // existing fixed components; adapt the source accent only as needed for contrast.
 export function designFromPalette(palette=[]){

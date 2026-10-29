@@ -1,4 +1,4 @@
-import {defaults,validateTokens} from './core.mjs';
+import {defaults,validateTokens} from './core.mjs?v=0.4.1';
 
 // User-owned credentials and the last failed handoff live only in this tab.
 export const MODELS=Object.freeze({planner:'gpt-6.1-sol',executor:'gpt-6-luna'});
