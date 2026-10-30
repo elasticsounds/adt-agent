@@ -22,3 +22,14 @@ RAW_ADT="/path/to/raw-folder" node tests/composition-export.mjs
 ```
 
 The first test builds six compositions from raw input and checks visible text, fonts, artwork, phone layouts, refresh recovery, style edits, repeat generation and library export. The export check verifies that both downloads link to the composed examples while preserving the reader. The runtime check serves the candidate package with the original reader, checking keyboard quiz feedback, response persistence, Next/Back and accessibility. Screenshots require visual review separately. No paid AI calls or private textbook assets are included in the published site.
+
+## Regeneration and October 2026 audit
+
+- `node tests/regenerate.mjs`: key/consent gating, Sol/Luna routing, source sharing, prompt retries, persistent previews, invalid responses, cancellation, stale work, single-page application, Undo, fixed-size preview and application accessibility.
+- `node tests/regenerate-real.mjs`: representative pages from the actual 92-section book, original Reader navigation, retained learner answers, repeated regeneration and export preservation.
+- `node tests/audit-regressions.mjs`: viewer/report/source-gap agreement and corrected mappings. `tests/crop.mjs` now verifies that a crop cannot overwrite a shared PNG used on another page.
+- `APP_URL=https://elasticsounds.github.io/adt-agent/ node tests/live-regenerate.mjs`: deployed UI, versioned assets, persistent candidate, application and Undo, with simulated AI responses.
+
+The 0.10.0 audit also runs the raw 94-page PDF/92-section composition pipeline, whole-book application and 184 layout checks, exported-reader navigation at desktop/phone sizes, and the complete sample regression suite. Real API account access and model output quality remain outside these simulated-response tests.
+
+For fixed-size, scaled iframes, use the coordinate helper for pointer checks, or focus the native control and activate it with the keyboard. Resizing the browser does not change the selected Wide/Phone mode. Multi-tab tests must activate the tab being edited, matching user interaction and avoiding background-tab animation/timer throttling.

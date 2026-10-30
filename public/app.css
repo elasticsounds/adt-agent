@@ -82,3 +82,10 @@
 .review-viewport:has(>iframe[hidden]){height:0!important}
 .review-viewport>#book-preview,.review-viewport>#design-preview{position:absolute;inset:0 auto auto 0;width:var(--review-width)!important;max-width:none!important;margin:0!important;transform-origin:top left}
 #pdf-preview{max-width:1280px}
+
+/* A full-size reader preview; the dialog scrolls as one document. */
+#regenerate-dialog{width:calc(100vw - 32px);max-width:1360px;max-height:calc(100dvh - 32px);overflow:auto;padding:24px}
+.regen-heading,.regen-toolbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}.regen-toolbar{align-items:center;margin:20px 0 12px}
+#regen-page,#regen-used-prompt{overflow-wrap:anywhere}#regen-form{max-width:950px}#regen-prompt{font-size:15px}#regen-result{margin-top:20px;border-left:3px solid var(--green);padding-left:16px}
+.review-viewport>#regen-preview{position:absolute;inset:0 auto auto 0;width:var(--review-width)!important;max-width:none!important;margin:0!important;transform-origin:top left;border:0;background:white}
+#chat-regenerate{margin-top:10px}@media(max-width:600px){#regenerate-dialog{padding:16px}}

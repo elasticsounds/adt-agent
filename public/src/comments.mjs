@@ -1,6 +1,6 @@
-import {pdfObjects} from './pdf.mjs?v=0.9.1';
-import {resolveSelectionTargets,selectionImageIndices} from './element-edits.mjs?v=0.9.1';
-import {sourcePageFor,sectionForSourcePage} from './source-navigation.mjs?v=0.9.1';
+import {pdfObjects} from './pdf.mjs?v=0.10.0';
+import {resolveSelectionTargets,selectionImageIndices} from './element-edits.mjs?v=0.10.0';
+import {sourcePageFor,sectionForSourcePage} from './source-navigation.mjs?v=0.10.0';
 const $=id=>document.getElementById(id);
 export async function rasterCrop(image,width,height){
  const scale=Math.min(2,1600/Math.max(width,height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(width*scale));canvas.height=Math.max(1,Math.round(height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);let jpeg=canvas.toDataURL('image/jpeg',.86);if(jpeg.length>1800000)jpeg=canvas.toDataURL('image/jpeg',.65);if(jpeg.length>1800000)throw Error('That capture is too large. Select a smaller area.');return jpeg;

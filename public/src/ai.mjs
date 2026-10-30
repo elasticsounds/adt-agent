@@ -1,6 +1,6 @@
-import {rememberKey,recalledKey} from './storage.mjs?v=0.9.1';
-import {normalizeElementStyle,ELEMENT_STYLE_HELP} from './element-edits.mjs?v=0.9.1';
-import {defaults,validateTokens} from './core.mjs?v=0.9.1';
+import {rememberKey,recalledKey} from './storage.mjs?v=0.10.0';
+import {normalizeElementStyle,ELEMENT_STYLE_HELP} from './element-edits.mjs?v=0.10.0';
+import {defaults,validateTokens} from './core.mjs?v=0.10.0';
 
 // User-owned credentials and the last failed handoff live only in this tab.
 export const MODELS=Object.freeze({planner:'gpt-6.1-sol',executor:'gpt-6-luna'});

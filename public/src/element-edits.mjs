@@ -1,4 +1,4 @@
-import {serialize} from './core.mjs?v=0.9.1';
+import {serialize} from './core.mjs?v=0.10.0';
 const numeric={fontSize:[16,64,'px'],lineHeight:[1.2,2.4,''],width:[20,100,'%'],maxWidth:[60,1200,'px'],marginTop:[0,80,'px'],marginBottom:[0,80,'px'],padding:[0,64,'px'],gap:[0,64,'px'],borderRadius:[0,40,'px']};
 const choices={display:['block','inline-block'],textAlign:['start','left','center','right'],objectFit:['contain','cover'],alignSelf:['auto','start','center','end','stretch'],marginInline:['auto','0']};
 export const ELEMENT_STYLE_HELP='fontSize (16–64 px), lineHeight (1.2–2.4), width (20–100 percent), maxWidth (60–1200 px), marginTop/marginBottom (0–80 px), padding/gap (0–64 px), borderRadius (0–40 px), display (block/inline-block), textAlign (start/left/center/right), objectFit (contain/cover), alignSelf (auto/start/center/end/stretch), marginInline (auto/0). Values for numeric properties must be numbers. To centre an image use display:block, a smaller width or maxWidth and marginInline:auto. Use objectFit:cover only when the person explicitly requests cropping.';

@@ -30,4 +30,4 @@ try{
  }
  await p.click('[data-view=export]');const dl=p.waitForEvent('download');await p.click('#download-book');await (await dl).saveAs(out+'/applied-book.zip');await ready();console.log('Applied book exported with synchronized cache and shared components.');
  assert.deepEqual(errors,[]);assert.equal(report.coverage.completed.length,184);assert.equal(report.visual.filter(i=>['overflow','render-image','scan-error'].includes(i.kind)).length,0,'Layout failures: '+JSON.stringify(report.visual.filter(i=>['overflow','render-image','scan-error'].includes(i.kind))));
-}finally{await browser.close()}
+}catch(error){console.log('Book application state',await p.evaluate(()=>({busy:document.body.dataset.busy,status:document.querySelector('#dirty-status').textContent,error:document.querySelector('#storage-error').textContent,toast:document.querySelector('#toast').textContent,frame:document.querySelector('#book-preview').style.height,scrollY})));throw error;}finally{await browser.close()}

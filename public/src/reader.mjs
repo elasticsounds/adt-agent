@@ -1,6 +1,6 @@
-import {snapshotReaderArea,installReaderAnnotations} from './annotation-capture.mjs?v=0.9.1';
-import {Preview} from './preview.mjs?v=0.9.1';
-import {parse,text,serialize,resolvePath} from './core.mjs?v=0.9.1';
+import {snapshotReaderArea,installReaderAnnotations} from './annotation-capture.mjs?v=0.10.0';
+import {Preview} from './preview.mjs?v=0.10.0';
+import {parse,text,serialize,resolvePath} from './core.mjs?v=0.10.0';
 
 // Run the imported Studio reader, not a replacement UI. Only its file transport,
 // browser history and storage are adapted for an opaque, local-only iframe.
@@ -21,7 +21,7 @@ export class Reader {
   else if(m.type==='navigate'){const href=this.path(m.url);if(this.book.spine.some(p=>p.href===href))this.options.onFullNavigate?.(href);}
   else if(typeof m.type==='string'&&m.type.startsWith('annotation-')){this.options.onAnnotation?.(m,this.href);}
   else if(m.type==='storage'&&typeof m.key==='string'&&m.key.length<500&&(m.value===null||typeof m.value==='string'&&m.value.length<100000)){
-   if(m.value===null)delete this.state[m.key];else this.state[m.key]=m.value;this.options.onStorage?.();
+   if(m.value===null){if(!Object.hasOwn(this.state,m.key))return;delete this.state[m.key];}else{if(this.state[m.key]===m.value)return;this.state[m.key]=m.value;}this.options.onStorage?.();
   }
  }
  annotationMode(active){this.frame?.contentWindow.postMessage({readerToken:this.token,type:'annotation-mode',active},'*');}
