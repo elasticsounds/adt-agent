@@ -1,6 +1,6 @@
-import {pdfObjects} from './pdf.mjs?v=0.9.0';
-import {resolveSelectionTargets,selectionImageIndices} from './element-edits.mjs?v=0.9.0';
-import {sourcePageFor,sectionForSourcePage} from './source-navigation.mjs?v=0.9.0';
+import {pdfObjects} from './pdf.mjs?v=0.9.1';
+import {resolveSelectionTargets,selectionImageIndices} from './element-edits.mjs?v=0.9.1';
+import {sourcePageFor,sectionForSourcePage} from './source-navigation.mjs?v=0.9.1';
 const $=id=>document.getElementById(id);
 export async function rasterCrop(image,width,height){
  const scale=Math.min(2,1600/Math.max(width,height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(width*scale));canvas.height=Math.max(1,Math.round(height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);let jpeg=canvas.toDataURL('image/jpeg',.86);if(jpeg.length>1800000)jpeg=canvas.toDataURL('image/jpeg',.65);if(jpeg.length>1800000)throw Error('That capture is too large. Select a smaller area.');return jpeg;
@@ -30,7 +30,7 @@ export class Comments {
  fail(error){this.cancel();this.options.onError(error.message||String(error));}
  async readerMessage(message,href){
   if(message.type==='annotation-mode'){if(!message.active)this.cancel();return;}
-  if(message.type==='annotation-focus'){if(!Number.isFinite(message.rect?.y)||message.rect.y<0||message.rect.y>100000)return;const r=$('book-preview').getBoundingClientRect();window.scrollBy({top:r.top+message.rect.y-innerHeight/3,behavior:'smooth'});return;}
+  if(message.type==='annotation-focus'){if(!Number.isFinite(message.rect?.y)||message.rect.y<0||message.rect.y>100000)return;const frame=$('book-preview'),r=frame.getBoundingClientRect(),scale=r.width/frame.offsetWidth;window.scrollBy({top:r.top+message.rect.y*scale-innerHeight/3,behavior:'smooth'});return;}
   if(message.type==='annotation-error'){this.fail(Error(message.message));return;}
   if(message.type!=='annotation-capture')return;
   const state=this.options.state(),capture=message.capture,book=state.book,revision=book?.revision;

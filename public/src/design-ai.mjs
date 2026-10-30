@@ -1,6 +1,6 @@
-import {FAMILIES,sectionInventory,assembleSystem} from './design-system.mjs?v=0.9.0';
-import {defaults,validateTokens,sha} from './core.mjs?v=0.9.0';
-import {pageImage} from './pdf.mjs?v=0.9.0';
+import {FAMILIES,sectionInventory,assembleSystem} from './design-system.mjs?v=0.9.1';
+import {defaults,validateTokens,sha} from './core.mjs?v=0.9.1';
+import {pageImage} from './pdf.mjs?v=0.9.1';
 const str={type:'string'},num={type:'number'},family={type:'string',enum:FAMILIES},layout={type:'string',enum:['preserve','stack','split','cards']};
 const object=properties=>({type:'object',additionalProperties:false,properties,required:Object.keys(properties)});
 const OBSERVATIONS=object({pages:{type:'array',items:object({page:{type:'integer'},family,layout,heading_scale:num,panel_style:{type:'string',enum:['outlined','tinted','plain']},notes:str})}});

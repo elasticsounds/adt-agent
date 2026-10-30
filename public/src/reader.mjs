@@ -1,6 +1,6 @@
-import {snapshotReaderArea,installReaderAnnotations} from './annotation-capture.mjs?v=0.9.0';
-import {Preview} from './preview.mjs?v=0.9.0';
-import {parse,text,serialize,resolvePath} from './core.mjs?v=0.9.0';
+import {snapshotReaderArea,installReaderAnnotations} from './annotation-capture.mjs?v=0.9.1';
+import {Preview} from './preview.mjs?v=0.9.1';
+import {parse,text,serialize,resolvePath} from './core.mjs?v=0.9.1';
 
 // Run the imported Studio reader, not a replacement UI. Only its file transport,
 // browser history and storage are adapted for an opaque, local-only iframe.

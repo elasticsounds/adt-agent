@@ -75,3 +75,10 @@
 #comment-dialog{width:min(720px,calc(100vw - 28px));max-height:90dvh;overflow:auto;padding:24px}#comment-title{margin-top:0}#comment-origin{overflow-wrap:anywhere;font-size:13px;color:#425e52}#comment-image{display:block;width:100%;max-height:40dvh;object-fit:contain;border:1px solid var(--border);background:#f7f9f5;margin-bottom:20px;border-radius:8px}#comment-form>.stack{margin:16px 0}#comment-note{width:100%}
 #chat-comment-tool{margin-bottom:16px}#chat-attachment{border:1px solid #98b5a3;border-radius:10px;padding:12px;margin-bottom:16px;background:#f2f7f2;overflow-wrap:anywhere}#chat-attachment-image{display:block;max-height:180px;object-fit:contain;width:100%;background:white;margin-bottom:10px;border:1px solid var(--border)}#chat-attachment-note{white-space:pre-wrap;font-size:14px}#chat-attachment-label{font-size:12px}.chat-capture{display:block;max-width:100%;max-height:180px;object-fit:contain;margin-top:10px;border-radius:5px}.chat-capture-label{display:block;font-size:11px;overflow-wrap:anywhere}
 @media(max-width:780px){#comment-instructions{font-size:12px;gap:8px;bottom:8px;padding:10px}.preview-toolbar{flex-wrap:wrap}#comment-dialog{padding:18px}.comment-button{font-size:12px}}
+
+/* Fixed review geometry: resizing a column scales the page without reflowing it. */
+.review-viewport{--review-width:1280px;position:relative;width:100%;max-width:var(--review-width);margin-inline:auto;overflow:clip;flex:none;min-height:0}
+.phone .review-viewport{--review-width:390px}
+.review-viewport:has(>iframe[hidden]){height:0!important}
+.review-viewport>#book-preview,.review-viewport>#design-preview{position:absolute;inset:0 auto auto 0;width:var(--review-width)!important;max-width:none!important;margin:0!important;transform-origin:top left}
+#pdf-preview{max-width:1280px}
